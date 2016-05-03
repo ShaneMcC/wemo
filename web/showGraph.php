@@ -11,7 +11,7 @@
 	if ($type == null || $location == null || $serial == null) { die('Internal Error.'); }
 
 	// If the params look dodgy, abort.
-	if (preg_match('#/#', $location) || preg_match('#/#', $serial)) { die('Internal Error.'); }
+	if (preg_match('#[^A-Z0-9-_ ]#i', $location) || preg_match('#[^A-Z0-9-_]#i', $serial)) { die('Internal Error.'); }
 
 	$dir = $rrdDir . '/' . $location . '/' . $serial;
 	$rrd = $dir . '/' . $type . '.rrd';
