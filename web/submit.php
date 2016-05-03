@@ -27,7 +27,7 @@
 	$data['location'] = preg_replace('#[^a-z0-9-_ ]#', '', strtolower($location));
 
 	foreach ($data['devices'] as $dev) {
-		$dev['serial'] = preg_replace('#[^a-z0-9-_ ]#', '', strtoupper($dev['serial']));
+		$dev['serial'] = preg_replace('#[^A-Z0-9-_ ]#', '', strtoupper($dev['serial']));
 		$dir = $rrdDir . '/' . $data['location'] . '/' . $dev['serial'];
 		if (!file_exists($dir)) { mkdir($dir, 0755, true); }
 		if (!file_exists($dir)) { die(json_encode(array('error' => 'Internal Error'))); }
