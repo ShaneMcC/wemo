@@ -43,7 +43,7 @@
 		if (!file_exists($instantPower)) {
 			$rrdData = array();
 			$rrdData[] = 'create "' . $instantPower . '"';
-			$rrdData[] = '--start now';
+			$rrdData[] = '--start ' . $data['time'];
 			$rrdData[] = '--step 60';
 			$rrdData[] = 'DS:instantPower:GAUGE:120:U:U';
 			$rrdData[] = 'RRA:AVERAGE:0.5:1:1440';
