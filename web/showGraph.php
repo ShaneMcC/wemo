@@ -61,6 +61,19 @@
 		$rrdData[] = 'CDEF:powerd=power,0,LT,power,0,IF CDEF:powerdNoUnk=power,UN,0,powerd,IF AREA:powerdNoUnk#00ffd0';
 		$rrdData[] = 'LINE:power#080';
 
+		$rrdData[] = 'VDEF:powermax=power,MAXIMUM';
+		$rrdData[] = 'VDEF:poweravg=power,AVERAGE';
+		$rrdData[] = 'VDEF:powermin=power,MINIMUM';
+
+		$rrdData[] = 'COMMENT:"Maximum\: "';
+		$rrdData[] = 'GPRINT:powermax:"%.2lfW\l"';
+
+		$rrdData[] = 'COMMENT:"Average\: "';
+		$rrdData[] = 'GPRINT:poweravg:"%.2lfW\l"';
+
+		$rrdData[] = 'COMMENT:"Minimum\: "';
+		$rrdData[] = 'GPRINT:powermin:"%.2lfW\l"';
+
 		$out = execRRDTool($rrdData);
 		header("Content-Type: image/png");
 		die($out['stdout']);
