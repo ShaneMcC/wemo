@@ -59,7 +59,7 @@
 
 		$rrdData = array();
 		$rrdData[] = 'update "' . $instantPower . '"';
-		$rrdData[] = '--skip-past-updates';
+		// $rrdData[] = '--skip-past-updates';
 		$rrdData[] = '--template instantPower';
 		$rrdData[] = $data['time'] . ':' . $dev['data']['instantPower'];
 		execRRDTool($rrdData);
