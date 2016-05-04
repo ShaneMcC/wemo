@@ -19,7 +19,9 @@ class SSDP {
 			$search[] = 'Host: ' . $sendIP . ':1900';
 			$search[] = 'Man: "ssdp:discover"';
 			$search[] = 'ST: ' . $st;
-			$search[] = 'MX: ' . $timeout;
+			if ($sendIP != '239.255.255.250') {
+				$search[] = 'MX: ' . $timeout;
+			}
 			$search = implode($search, "\r\n") . "\r\n\r\n";
 
 			socket_sendto($sock, $search, strlen($search), 0, $sendIP, 1900);
