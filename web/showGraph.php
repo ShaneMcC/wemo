@@ -98,7 +98,7 @@
 		$rrdData[] = 'COMMENT:"Minimum\: "';
 		$rrdData[] = 'GPRINT:powermin:"%.2lfW\l"';
 
-		$rrdData[] = 'COMMENT:"Latest\: "';
+		$rrdData[] = 'COMMENT:"Latest\:  "';
 		$rrdData[] = 'GPRINT:powerlast:"%.2lfW\l"';
 
 		if ($debug) { die('<pre>'.print_r($rrdData, true)); }
