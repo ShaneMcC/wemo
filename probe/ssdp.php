@@ -11,19 +11,17 @@ class SSDP {
 	}
 
 	public function search($st = 'ssdp:all', $timeout = 2) {
-		$search = array();
-		$search[] = 'M-SEARCH * HTTP/1.1';
-		$search[] = 'Host: 239.255.255.250:1900';
-		$search[] = 'Man: "ssdp:discover"';
-		$search[] = 'ST: ' . $st;
-		$search[] = 'MX: 3';
-		// $search[] = 'User-Agent: gssdp-discover GSSDP/0.14.11';
-
-		$search = implode($search, "\r\n") . "\r\n\r\n";
-
 		$sock = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
 		socket_set_option($sock, SOL_SOCKET, SO_BROADCAST, true);
 		foreach ($this->discoveryIPs as $sendIP) {
+			$search = array();
+			$search[] = 'M-SEARCH * HTTP/1.1';
+			$search[] = 'Host: ' . $sendIP . ':1900';
+			$search[] = 'Man: "ssdp:discover"';
+			$search[] = 'ST: ' . $st;
+			$search[] = 'MX: ' . $timeout;
+			$search = implode($search, "\r\n") . "\r\n\r\n";
+
 			socket_sendto($sock, $search, strlen($search), 0, $sendIP, 1900);
 			socket_sendto($sock, $search, strlen($search), 0, $sendIP, 1900);
 			socket_sendto($sock, $search, strlen($search), 0, $sendIP, 1900);
