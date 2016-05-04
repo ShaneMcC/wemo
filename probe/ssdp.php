@@ -16,6 +16,8 @@ class SSDP {
 		$sock = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
 		socket_set_option($sock, SOL_SOCKET, SO_BROADCAST, true);
 		socket_sendto($sock, $search, strlen($search), 0, '239.255.255.250', 1900);
+		socket_sendto($sock, $search, strlen($search), 0, '239.255.255.250', 1900);
+		socket_sendto($sock, $search, strlen($search), 0, '239.255.255.250', 1900);
 		socket_set_option($sock, SOL_SOCKET, SO_RCVTIMEO, array('sec' => $timeout, 'usec'=>'0'));
 
 		$result = array();
