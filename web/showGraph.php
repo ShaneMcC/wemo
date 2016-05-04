@@ -7,6 +7,9 @@
 	$location = isset($_REQUEST['location']) ? $_REQUEST['location'] : null;
 	$serial = isset($_REQUEST['serial']) ? $_REQUEST['serial'] : null;
 
+	$debug = isset($_REQUEST['debug']);
+
+	// TODO: Decide sane limits automatically.
 	$linearGraph = false;
 	$lowerLimit = 20;
 	$upperLimit = 2000;
@@ -45,33 +48,37 @@
 		$rrdData[] = 'DEF:raw="' . $rrd . '":"' . $type . '":AVERAGE';
 		$rrdData[] = 'CDEF:power=raw,1000,/';
 
-		$gradients[2000] = 'ff0000';
-		$gradients[1500] = 'ff0000';
-		$gradients[1000] = 'ff0000';
-		$gradients[900] = 'ff0000';
-		$gradients[800] = 'ff1b00';
-		$gradients[700] = 'ff4100';
-		$gradients[600] = 'ff6600';
-		$gradients[400] = 'ff8e00';
-		$gradients[200] = 'ffb500';
-		$gradients[180] = 'ffdb00';
-		$gradients[160] = 'fdff00';
-		$gradients[140] = 'd7ff00';
-		$gradients[120] = 'b0ff00';
-		$gradients[100] = '8aff00';
-		$gradients[90] = '65ff00';
-		$gradients[80] = '3eff00';
-		$gradients[70] = '17ff00';
-		$gradients[60] = '00ff10';
-		$gradients[50] = '00ff36';
-		$gradients[40] = '00ff5c';
-		$gradients[30] = '00ff83';
-		$gradients[20] = '00ffa8';
-		$gradients[0] = '00ffd0';
+		$gradients[] = 'ff0000';
+		$gradients[] = 'ff0000';
+		$gradients[] = 'ff0000';
+		$gradients[] = 'ff0000';
+		$gradients[] = 'ff1b00';
+		$gradients[] = 'ff4100';
+		$gradients[] = 'ff6600';
+		$gradients[] = 'ff8e00';
+		$gradients[] = 'ffb500';
+		$gradients[] = 'ffdb00';
+		$gradients[] = 'fdff00';
+		$gradients[] = 'd7ff00';
+		$gradients[] = 'b0ff00';
+		$gradients[] = '8aff00';
+		$gradients[] = '65ff00';
+		$gradients[] = '3eff00';
+		$gradients[] = '17ff00';
+		$gradients[] = '00ff10';
+		$gradients[] = '00ff36';
+		$gradients[] = '00ff5c';
+		$gradients[] = '00ff83';
+		$gradients[] = '00ffa8';
+		$gradients[] = '00ffd0';
 
-		krsort($gradients);
+		$i = count($gradients);
 		foreach ($gradients as $val => $col) {
-			$val += $lowerLimit;
+			if ($linearGraph) {
+				$val = floor($lowerLimit + (($upperLimit - $lowerLimit)/ count($gradients) * $i--));
+			} else {
+				$val = floor(pow(10, ($i-- * (log($upperLimit/$lowerLimit, 10))/count($gradients))) * $lowerLimit);
+			}
 			$rrdData[] = 'CDEF:power' . $val . '=power,' . $val . ',LT,power,' . $val . ',IF CDEF:power' . $val . 'NoUnk=power,UN,0,power' . $val . ',IF AREA:power' . $val . 'NoUnk#' . $col;
 		}
 
@@ -89,6 +96,8 @@
 
 		$rrdData[] = 'COMMENT:"Minimum\: "';
 		$rrdData[] = 'GPRINT:powermin:"%.2lfW\l"';
+
+		if ($debug) { die('<pre>'.print_r($rrdData, true)); }
 
 		$out = execRRDTool($rrdData);
 		header("Content-Type: image/png");
