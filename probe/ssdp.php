@@ -19,7 +19,7 @@ class SSDP {
 			$search[] = 'Host: ' . $sendIP . ':1900';
 			$search[] = 'Man: "ssdp:discover"';
 			$search[] = 'ST: ' . $st;
-			if ($sendIP != '239.255.255.250') {
+			if ($sendIP == '239.255.255.250') {
 				$search[] = 'MX: ' . $timeout;
 			}
 			$search = implode($search, "\r\n") . "\r\n\r\n";
