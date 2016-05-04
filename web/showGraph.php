@@ -87,6 +87,7 @@
 		$rrdData[] = 'VDEF:powermax=power,MAXIMUM';
 		$rrdData[] = 'VDEF:poweravg=power,AVERAGE';
 		$rrdData[] = 'VDEF:powermin=power,MINIMUM';
+		$rrdData[] = 'VDEF:powerlast=power,LAST';
 
 		$rrdData[] = 'COMMENT:"Maximum\: "';
 		$rrdData[] = 'GPRINT:powermax:"%.2lfW\l"';
@@ -96,6 +97,9 @@
 
 		$rrdData[] = 'COMMENT:"Minimum\: "';
 		$rrdData[] = 'GPRINT:powermin:"%.2lfW\l"';
+
+		$rrdData[] = 'COMMENT:"Latest\: "';
+		$rrdData[] = 'GPRINT:powerlast:"%.2lfW\l"';
 
 		if ($debug) { die('<pre>'.print_r($rrdData, true)); }
 
