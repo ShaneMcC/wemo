@@ -6,12 +6,12 @@
 
 	$time = time();
 
-	$ssdp = new SSDP();
+	$ssdp = new SSDP($discoveryIPs);
 	$devices = array();
 
 	$insightService = 'urn:Belkin:service:insight:1';
 
-	foreach ($ssdp->search($insightService, 5) as $device) {
+	foreach ($ssdp->search($insightService, 2) as $device) {
 		$loc = file_get_contents($device['location']);
 		$xml = simplexml_load_string($loc);
 
@@ -19,6 +19,8 @@
 		$dev['name'] = (String)$xml->device->friendlyName;
 		$dev['serial'] = (String)$xml->device->serialNumber;
 		$dev['data'] = array();
+
+		echo 'Found: ', $dev['name'], "\n";
 
 		foreach ($xml->device->serviceList->service as $service) {
 			if ($service->serviceType == $insightService) {
