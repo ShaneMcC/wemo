@@ -6,6 +6,7 @@ class SSDP {
 
 	public function __construct($discoveryIPs = null) {
 		if ($discoveryIPs !== null) {
+			if (!is_array($discoveryIPs)) { $discoveryIPs = array($discoveryIPs); }
 			$this->discoveryIPs = $discoveryIPs;
 		}
 	}
@@ -35,12 +36,14 @@ class SSDP {
 			$input = null;
 			$from = null;
 			$port = null;
-			socket_recvfrom($sock, $input, 1024, MSG_WAITALL, $from, $from);
+			socket_recvfrom($sock, $input, 1024, MSG_WAITALL, $from, $port);
 			if ($input !== null) {
 		   		foreach (explode("\r\n\r\n", trim($input)) as $reply) {
 					$headers = $this->parseHeaders($reply);
 					if (isset($headers['usn'])) {
 						$result[$headers['usn']] = $headers;
+						$result[$headers['usn']]['__IP'] = $from;
+						$result[$headers['usn']]['__PORT'] = $port;
 					}
 				}
 			} else {

@@ -1,8 +1,31 @@
+#!/usr/bin/php
 <?php
 
 	require_once(dirname(__FILE__) . '/config.php');
 	require_once(dirname(__FILE__) . '/ssdp.php');
 	require_once(dirname(__FILE__) . '/phpuri.php');
+	require_once(dirname(__FILE__) . '/cliparams.php');
+
+	addCLIParam('s', 'search', 'Just search for devices, don\'t collect or post any data.');
+	addCLIParam('p', 'post', 'Just post stored data to collector, don\'t collect any new data.');
+	addCLIParam('d', 'debug', 'Don\'t post data to collector, just dump to CLI instead.');
+	addCLIParam('', 'key', 'Submission to key use rather than config value', true);
+	addCLIParam('', 'location', 'Submission location to use rather than config value', true);
+	addCLIParam('', 'server', 'Submission server to use rather than config value', true);
+	addCLIParam('', 'ip', 'Discovery IP to probe rather than config value', true);
+
+	$daemon['cli'] = parseCLIParams($_SERVER['argv']);
+	if (isset($daemon['cli']['help'])) {
+		echo 'Usage: ', $_SERVER['argv'][0], ' [options]', "\n\n";
+		echo 'Options:', "\n\n";
+		echo showCLIParams(), "\n";
+		die(0);
+	}
+
+	if (isset($daemon['cli']['key'])) { $submissionKey = end($daemon['cli']['key']['values']); }
+	if (isset($daemon['cli']['location'])) { $location = end($daemon['cli']['location']['values']); }
+	if (isset($daemon['cli']['server'])) { $collectionServer = end($daemon['cli']['server']['values']); }
+	if (isset($daemon['cli']['ip'])) { $discoveryIPs = $daemon['cli']['ip']['values']; }
 
 	$time = time();
 
@@ -11,48 +34,54 @@
 
 	$insightService = 'urn:Belkin:service:insight:1';
 
-	foreach ($ssdp->search($insightService, 2) as $device) {
-		$loc = file_get_contents($device['location']);
-		$xml = simplexml_load_string($loc);
+	if (!isset($daemon['cli']['post'])) {
+		foreach ($ssdp->search($insightService, 2) as $device) {
+			$loc = file_get_contents($device['location']);
+			$xml = simplexml_load_string($loc);
 
-		$dev = array();
-		$dev['name'] = (String)$xml->device->friendlyName;
-		$dev['serial'] = (String)$xml->device->serialNumber;
-		$dev['data'] = array();
+			$dev = array();
+			$dev['name'] = (String)$xml->device->friendlyName;
+			$dev['serial'] = (String)$xml->device->serialNumber;
+			$dev['ip'] = $device['__IP'];
+			$dev['port'] = $device['__PORT'];
 
-		echo 'Found: ', $dev['name'], "\n";
+			$dev['data'] = array();
 
-		foreach ($xml->device->serviceList->service as $service) {
-			if ($service->serviceType == $insightService) {
-				$url = phpUri::parse($device['location'])->join($service->controlURL);
+			echo sprintf('Found: %s / %s [%s:%s -> %s]' . "\n", $dev['name'], $dev['serial'], $dev['ip'], $dev['port'], $device['location']);
 
-				$soap = new SoapClient(null, array('location' => $url, 'uri' => $insightService));
+			if (isset($daemon['cli']['search'])) { continue; }
+			foreach ($xml->device->serviceList->service as $service) {
+				if ($service->serviceType == $insightService) {
+					$url = phpUri::parse($device['location'])->join($service->controlURL);
 
-				$calls = array();
-				$calls['instantPower'] = 'GetPower';
-				$calls['todayKWH'] = 'GetTodayKWH';
-				$calls['powerThreshold'] = 'GetPowerThreshold';
-				$calls['insightInfo'] = 'GetInsightInfo';
-				$calls['insightParams'] = 'GetInsightParams';
-				$calls['onFor'] = 'GetONFor';
-				$calls['inSBYSince'] = 'GetInSBYSince';
-				$calls['todayONTime'] = 'GetTodayONTime';
-				$calls['todaySBYTime'] = 'GetTodaySBYTime';
+					$soap = new SoapClient(null, array('location' => $url, 'uri' => $insightService));
 
-				foreach ($calls as $k => $f) {
-					$dev['data'][$k] = $soap->__soapCall($f, array());
+					$calls = array();
+					$calls['instantPower'] = 'GetPower';
+					$calls['todayKWH'] = 'GetTodayKWH';
+					$calls['powerThreshold'] = 'GetPowerThreshold';
+					$calls['insightInfo'] = 'GetInsightInfo';
+					$calls['insightParams'] = 'GetInsightParams';
+					$calls['onFor'] = 'GetONFor';
+					$calls['inSBYSince'] = 'GetInSBYSince';
+					$calls['todayONTime'] = 'GetTodayONTime';
+					$calls['todaySBYTime'] = 'GetTodaySBYTime';
+
+					foreach ($calls as $k => $f) {
+						$dev['data'][$k] = $soap->__soapCall($f, array());
+					}
 				}
 			}
+
+			$devices[] = $dev;
 		}
 
-		$devices[] = $dev;
-	}
-
-	if (count($devices) > 0) {
-		$data = json_encode(array('time' => $time, 'devices' => $devices));
-		if (!file_exists($dataDir)) { @mkdir($dataDir); }
-		if (file_exists($dataDir) && is_dir($dataDir)) {
-			file_put_contents($dataDir . '/' . $time . '.js', $data);
+		if (count($devices) > 0) {
+			$data = json_encode(array('time' => $time, 'devices' => $devices));
+			if (!file_exists($dataDir)) { @mkdir($dataDir); }
+			if (file_exists($dataDir) && is_dir($dataDir)) {
+				file_put_contents($dataDir . '/' . $time . '.js', $data);
+			}
 		}
 	}
 
@@ -72,6 +101,12 @@
 
 		$result = @json_decode($result, true);
 		return isset($result['success']);
+	}
+
+	if (isset($daemon['cli']['search'])) { die(0); }
+	if (isset($daemon['cli']['debug'])) {
+		print_r($devices);
+		die(0);
 	}
 
 	// Submit Data.
