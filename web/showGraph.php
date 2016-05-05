@@ -27,6 +27,11 @@
 		}
 	}
 
+	if (isset($graphOpts[$location][$serial]['graphMin'])) { $graphMin = $graphOpts[$location][$serial]['graphMin']; }
+	if (isset($graphOpts[$location][$serial]['graphMax'])) { $graphMax = $graphOpts[$location][$serial]['graphMax']; }
+	if (isset($graphOpts[$location][$serial]['autoLimit'])) { $autoLimit = $graphOpts[$location][$serial]['autoLimit']; }
+	if (isset($graphOpts[$location][$serial]['linearGraph'])) { $linearGraph = $graphOpts[$location][$serial]['linearGraph']; }
+
 	// Originally based on https://www.chameth.com/2016/05/02/monitoring-power-with-wemo.html
 	if ($type == 'instantPower') {
 		if ($autoLimit) {

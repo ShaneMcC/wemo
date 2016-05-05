@@ -23,6 +23,13 @@
 	 */
 	$autoLimit = false;
 
+	// The above options can also be specified per-graph
+	// using $graphOpts['<location>']['<serial>']['<option>'] = 'value';
+	//
+	// Options not set will use the defaults
+	$graphOpts['Home']['ABCDEFGH'] = array('linearGraph' => true, 'graphMin' => 500, 'graphMax' => 2500);
+	$graphOpts['Home']['ABCDEFGHI'] = array('graphMin' => 0.5, 'graphMax' => 1.75, 'autoLimit' => true);
+
 	$probes = array();
 	// $probes['Home'] = 'SomePassword';
 
