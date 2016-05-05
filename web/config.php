@@ -15,6 +15,32 @@
 	/** Upper Limit for graphs. */
 	$graphMax = 2000;
 
+	/** Gradient for graphs. */
+	$gradients = array();
+	$gradients[] = 'ff0000';
+	$gradients[] = 'ff0000';
+	$gradients[] = 'ff0000';
+	$gradients[] = 'ff0000';
+	$gradients[] = 'ff1b00';
+	$gradients[] = 'ff4100';
+	$gradients[] = 'ff6600';
+	$gradients[] = 'ff8e00';
+	$gradients[] = 'ffb500';
+	$gradients[] = 'ffdb00';
+	$gradients[] = 'fdff00';
+	$gradients[] = 'd7ff00';
+	$gradients[] = 'b0ff00';
+	$gradients[] = '8aff00';
+	$gradients[] = '65ff00';
+	$gradients[] = '3eff00';
+	$gradients[] = '17ff00';
+	$gradients[] = '00ff10';
+	$gradients[] = '00ff36';
+	$gradients[] = '00ff5c';
+	$gradients[] = '00ff83';
+	$gradients[] = '00ffa8';
+	$gradients[] = '00ffd0';
+
 	/**
 	 * Automatically decide limits for graphs?
 	 *
