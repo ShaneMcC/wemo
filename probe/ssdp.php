@@ -11,16 +11,20 @@ class SSDP {
 		}
 	}
 
-	public function search($st = 'ssdp:all', $timeout = 2) {
+	public function search($st = 'ssdp:all', $timeout = 2, $allowUnicastDiscovery = true) {
 		$sock = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
 		socket_set_option($sock, SOL_SOCKET, SO_BROADCAST, true);
 		foreach ($this->discoveryIPs as $sendIP) {
 			$search = array();
 			$search[] = 'M-SEARCH * HTTP/1.1';
-			$search[] = 'Host: ' . $sendIP . ':1900';
+			if ($allowUnicastDiscovery) {
+				$search[] = 'Host: ' . $sendIP . ':1900';
+			} else {
+				$search[] = 'Host: 239.255.255.250:1900';
+			}
 			$search[] = 'Man: "ssdp:discover"';
 			$search[] = 'ST: ' . $st;
-			if ($sendIP == '239.255.255.250') {
+			if (!$allowUnicastDiscovery || $sendIP == '239.255.255.250') {
 				$search[] = 'MX: ' . $timeout;
 			}
 			$search = implode($search, "\r\n") . "\r\n\r\n";

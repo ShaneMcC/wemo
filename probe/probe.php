@@ -13,6 +13,9 @@
 	addCLIParam('', 'location', 'Submission location to use rather than config value', true);
 	addCLIParam('', 'server', 'Submission server to use rather than config value', true);
 	addCLIParam('', 'ip', 'Discovery IP to probe rather than config value', true);
+	addCLIParam('', 'allow-unicast-discovery', 'SSDP discovery to non-multicast IPs should have unicast headers.');
+	addCLIParam('', 'no-unicast-discovery', 'SSDP discovery to non-multicast IPs should have multicast headers');
+	addCLIParam('', 'timeout', 'SSDP discovery timeout in seconds.', true);
 
 	$daemon['cli'] = parseCLIParams($_SERVER['argv']);
 	if (isset($daemon['cli']['help'])) {
@@ -26,6 +29,9 @@
 	if (isset($daemon['cli']['location'])) { $location = end($daemon['cli']['location']['values']); }
 	if (isset($daemon['cli']['server'])) { $collectionServer = end($daemon['cli']['server']['values']); }
 	if (isset($daemon['cli']['ip'])) { $discoveryIPs = $daemon['cli']['ip']['values']; }
+	if (isset($daemon['cli']['timeout'])) { $ssdpTimeout = end($daemon['cli']['timeout']['values']); }
+	if (isset($daemon['cli']['allow-unicast-discovery'])) { $allowUnicastDiscovery = true; }
+	if (isset($daemon['cli']['no-unicast-discovery'])) { $allowUnicastDiscovery = false; }
 
 	$time = time();
 
@@ -35,7 +41,7 @@
 	$insightService = 'urn:Belkin:service:insight:1';
 
 	if (!isset($daemon['cli']['post'])) {
-		foreach ($ssdp->search($insightService, 2) as $device) {
+		foreach ($ssdp->search($insightService, $ssdpTimeout, $allowUnicastDiscovery) as $device) {
 			$loc = file_get_contents($device['location']);
 			$xml = simplexml_load_string($loc);
 

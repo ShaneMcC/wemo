@@ -12,6 +12,12 @@
 	/** IPs to send SSDP Discovery to. */
 	$discoveryIPs = array('239.255.255.250');
 
+	/** Try setting this to false if unicast discovery doesn't work. */
+	$allowUnicastDiscovery = true;
+
+	/** Timeout for discovery packets */
+	$ssdpTimeout = 2;
+
 	/** Data storage directory. */
 	$dataDir = dirname(__FILE__) . '/data/';
 
