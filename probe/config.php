@@ -9,6 +9,15 @@
 	/** Collection URL. */
 	$collectionServer = 'http://127.0.0.1/wemo/submit.php';
 
+	// Collection Server can also be an array.
+	//
+	// $collectionServer = array();
+	// $collectionServer[] = 'http://127.0.0.1/wemo/submit.php';
+	// $collectionServer[] = 'http://Home:SomeOtherPassword@10.0.0.2/wemo/submit.php';
+	//
+	// If no location/key is specified in the url, then the default values of
+	// $location and $submissionKey will be used.
+
 	/** IPs to send SSDP Discovery to. */
 	$discoveryIPs = array('239.255.255.250');
 

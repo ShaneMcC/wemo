@@ -27,11 +27,13 @@
 
 	if (isset($daemon['cli']['key'])) { $submissionKey = end($daemon['cli']['key']['values']); }
 	if (isset($daemon['cli']['location'])) { $location = end($daemon['cli']['location']['values']); }
-	if (isset($daemon['cli']['server'])) { $collectionServer = end($daemon['cli']['server']['values']); }
+	if (isset($daemon['cli']['server'])) { $collectionServer = $daemon['cli']['server']['values']; }
 	if (isset($daemon['cli']['ip'])) { $discoveryIPs = $daemon['cli']['ip']['values']; }
 	if (isset($daemon['cli']['timeout'])) { $ssdpTimeout = end($daemon['cli']['timeout']['values']); }
 	if (isset($daemon['cli']['allow-unicast-discovery'])) { $allowUnicastDiscovery = true; }
 	if (isset($daemon['cli']['no-unicast-discovery'])) { $allowUnicastDiscovery = false; }
+
+	if (!is_array($collectionServer)) { $collectionServer = array($collectionServer); }
 
 	$time = time();
 
@@ -84,22 +86,46 @@
 
 		if (count($devices) > 0) {
 			$data = json_encode(array('time' => $time, 'devices' => $devices));
-			if (!file_exists($dataDir)) { @mkdir($dataDir); }
-			if (file_exists($dataDir) && is_dir($dataDir)) {
-				file_put_contents($dataDir . '/' . $time . '.js', $data);
+
+			foreach ($collectionServer as $url) {
+				$serverDataDir = $dataDir . '/' . parse_url($url, PHP_URL_HOST) . '-' . crc32($url) . '/';
+				if (!file_exists($serverDataDir)) { @mkdir($serverDataDir, 0755, true); }
+				if (file_exists($serverDataDir) && is_dir($dataDir)) {
+					file_put_contents($serverDataDir . '/' . $time . '.js', $data);
+				}
 			}
 		}
 	}
 
-	function submitData($data) {
-		global $location, $submissionKey, $collectionServer;
+	function unparse_url($parsed_url) {
+		$scheme = isset($parsed_url['scheme']) ? $parsed_url['scheme'] . '://' : '';
+		$host = isset($parsed_url['host']) ? $parsed_url['host'] : '';
+		$port = isset($parsed_url['port']) ? ':' . $parsed_url['port'] : '';
+		$user = isset($parsed_url['user']) ? $parsed_url['user'] : '';
+		$pass = isset($parsed_url['pass']) ? ':' . $parsed_url['pass']  : '';
+		$pass = ($user || $pass) ? "$pass@" : '';
+		$path = isset($parsed_url['path']) ? $parsed_url['path'] : '';
+		$query = isset($parsed_url['query']) ? '?' . $parsed_url['query'] : '';
+		$fragment = isset($parsed_url['fragment']) ? '#' . $parsed_url['fragment'] : '';
+		return "$scheme$user$pass$host$port$path$query$fragment";
+	}
+
+	function submitData($data, $url) {
+		global $location, $submissionKey;
+
+		$url = parse_url($url);
+		$thisUser = isset($url['user']) ? $url['user'] : $location;
+		$thisPass = isset($url['pass']) ? $url['pass'] : $submissionKey;
+		unset($url['user']);
+		unset($url['pass']);
+		$url = unparse_url($url);
 
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $collectionServer);
+		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_POST, true);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_USERPWD, $location . ':' . $submissionKey);
+		curl_setopt($ch, CURLOPT_USERPWD, $thisUser . ':' . $thisPass);
 		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 
 		$result = curl_exec($ch);
@@ -116,14 +142,20 @@
 	}
 
 	// Submit Data.
-	if (file_exists($dataDir) && is_dir($dataDir)) {
-		foreach (glob($dataDir . '/*.js') as $dataFile) {
-			$data = file_get_contents($dataFile);
-			$test = json_decode($data, true);
-			if (isset($test['time']) && isset($test['devices'])) {
-				if (submitData($data)) {
-					echo 'Submitted data for: ', $test['time'], "\n";
-					unlink($dataFile);
+	foreach ($collectionServer as $url) {
+		$serverDataDir = $dataDir . '/' . parse_url($url, PHP_URL_HOST) . '-' . crc32($url) . '/';
+
+		if (file_exists($serverDataDir) && is_dir($serverDataDir)) {
+			foreach (glob($serverDataDir . '/*.js') as $dataFile) {
+				$data = file_get_contents($dataFile);
+				$test = json_decode($data, true);
+				if (isset($test['time']) && isset($test['devices'])) {
+					if (submitData($data, $url)) {
+						echo 'Submitted data for: ', $test['time'], ' to ', $url, "\n";
+						unlink($dataFile);
+					} else {
+						echo 'Unable to submit data for: ', $test['time'], ' to ', $url, "\n";
+					}
 				}
 			}
 		}
