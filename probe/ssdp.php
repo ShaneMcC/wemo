@@ -29,7 +29,7 @@ class SSDP {
 			socket_sendto($sock, $search, strlen($search), 0, $sendIP, 1900);
 			socket_sendto($sock, $search, strlen($search), 0, $sendIP, 1900);
 		}
-		socket_set_option($sock, SOL_SOCKET, SO_RCVTIMEO, array('sec' => $timeout, 'usec'=>'0'));
+		socket_set_option($sock, SOL_SOCKET, SO_RCVTIMEO, array('sec' => ($timeout + 1), 'usec'=>'0'));
 
 		$result = array();
 		while (true) {
