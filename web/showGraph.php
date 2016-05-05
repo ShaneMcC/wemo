@@ -9,11 +9,6 @@
 
 	$debug = isset($_REQUEST['debug']);
 
-	// TODO: Decide sane limits automatically.
-	$linearGraph = false;
-	$lowerLimit = 20;
-	$upperLimit = 2000;
-
 	// If the params are not passed to us, abort.
 	if ($type == null || $location == null || $serial == null) { die('Internal Error.'); }
 
@@ -32,8 +27,27 @@
 		}
 	}
 
-	// Based on https://www.chameth.com/2016/05/02/monitoring-power-with-wemo.html
+	// Originally based on https://www.chameth.com/2016/05/02/monitoring-power-with-wemo.html
 	if ($type == 'instantPower') {
+		if ($autoLimit) {
+			$rrdData = array();
+			$rrdData[] = 'graph /dev/null';
+			$rrdData[] = 'DEF:raw="' . $rrd . '":"' . $type . '":AVERAGE';
+			$rrdData[] = 'CDEF:power=raw,1000,/';
+			$rrdData[] = 'VDEF:powermax=power,MAXIMUM';
+			$rrdData[] = 'VDEF:powermin=power,MINIMUM';
+			$rrdData[] = 'PRINT:powermin:"%lf"';
+			$rrdData[] = 'PRINT:powermax:"%lf"';
+			$out = execRRDTool($rrdData);
+			$bits = explode("\n", $out['stdout']);
+			$lowerLimit = max(floor($bits[1]) * $graphMin, 1);
+			$upperLimit = max(ceil($bits[2]) * $graphMax, 1);
+		} else {
+			$lowerLimit = $graphMin;
+			$upperLimit = $graphMax;
+		}
+
+
 		$rrdData = array();
 		$rrdData[] = 'graph -';
 		$rrdData[] = '--title "' . $title . '"';
@@ -75,11 +89,13 @@
 		$i = count($gradients);
 		foreach ($gradients as $val => $col) {
 			if ($linearGraph) {
-				$val = floor($lowerLimit + (($upperLimit - $lowerLimit)/ count($gradients) * $i--));
+				$val = $lowerLimit + (($upperLimit - $lowerLimit)/ count($gradients) * $i--);
 			} else {
-				$val = floor(pow(10, ($i-- * (log($upperLimit/$lowerLimit, 10))/count($gradients))) * $lowerLimit);
+				$val = pow(10, ($i-- * (log($upperLimit/$lowerLimit, 10))/count($gradients))) * $lowerLimit;
 			}
-			$rrdData[] = 'CDEF:power' . $val . '=power,' . $val . ',LT,power,' . $val . ',IF CDEF:power' . $val . 'NoUnk=power,UN,0,power' . $val . ',IF AREA:power' . $val . 'NoUnk#' . $col;
+			$val = ($i == 0) ? floor($val) : ceil($val);
+
+			$rrdData[] = 'CDEF:powerArea' . $i . '=power,' . $val . ',LT,power,' . $val . ',IF CDEF:powerArea' . $i . 'NoUnk=power,UN,0,powerArea' . $i . ',IF AREA:powerArea' . $i . 'NoUnk#' . $col;
 		}
 
 		$rrdData[] = 'LINE:power#080';
