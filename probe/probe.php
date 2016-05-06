@@ -8,7 +8,7 @@
 
 	addCLIParam('s', 'search', 'Just search for devices, don\'t collect or post any data.');
 	addCLIParam('p', 'post', 'Just post stored data to collector, don\'t collect any new data.');
-	addCLIParam('d', 'debug', 'Don\'t post data to collector, just dump to CLI instead.');
+	addCLIParam('d', 'debug', 'Don\'t save data or attempt to post to collector, just dump to CLI instead.');
 	addCLIParam('', 'key', 'Submission to key use rather than config value', true);
 	addCLIParam('', 'location', 'Submission location to use rather than config value', true);
 	addCLIParam('', 'server', 'Submission server to use rather than config value', true);
@@ -65,18 +65,58 @@
 					$soap = new SoapClient(null, array('location' => $url, 'uri' => $insightService));
 
 					$calls = array();
+					$calls['insightParams'] = 'GetInsightParams';
 					$calls['instantPower'] = 'GetPower';
 					$calls['todayKWH'] = 'GetTodayKWH';
 					$calls['powerThreshold'] = 'GetPowerThreshold';
 					$calls['insightInfo'] = 'GetInsightInfo';
-					$calls['insightParams'] = 'GetInsightParams';
 					$calls['onFor'] = 'GetONFor';
 					$calls['inSBYSince'] = 'GetInSBYSince';
 					$calls['todayONTime'] = 'GetTodayONTime';
 					$calls['todaySBYTime'] = 'GetTodaySBYTime';
 
 					foreach ($calls as $k => $f) {
-						$dev['data'][$k] = $soap->__soapCall($f, array());
+						try {
+							$dev['data'][$k] = $soap->__soapCall($f, array());
+						} catch (Exception $e) { }
+					}
+
+					// Newwer firmware doesn't seem to like the answering to
+					// all of the above functions all of the time.
+					//
+					// However, it does seem to always answer insightParams.
+					//
+					// So now we parse insightParams...
+					//
+					// Based on http://ouimeaux.readthedocs.io/en/latest/_modules/ouimeaux/device/insight.html
+					if (isset($dev['data']['insightParams'])) {
+						$bits = explode('|', $dev['data']['insightParams']);
+						$dev['data']['insightParams_state'] = $bits[0];
+						$dev['data']['insightParams_lastChange'] = $bits[1];
+						$dev['data']['insightParams_onFor'] = $bits[2];
+						$dev['data']['insightParams_onToday'] = $bits[3];
+						$dev['data']['insightParams_onTotal'] = $bits[4];
+						$dev['data']['insightParams_timeperiod'] = $bits[5];
+						$dev['data']['insightParams_averagePower'] = $bits[6];
+						$dev['data']['insightParams_currentMW'] = $bits[7];
+						$dev['data']['insightParams_todayMW'] = $bits[8];
+						$dev['data']['insightParams_totalMW'] = $bits[9];
+						$dev['data']['insightParams_threshold'] = $bits[10];
+					}
+
+					// And then where we didn't get anything from the real
+					// function calls, and there is an appropriate entry in
+					// insightParams, we'll simulate that instead... Stupid.
+					$map = array();
+					$map['instantPower'] = 'insightParams_currentMW';
+					$map['powerThreshold'] = 'insightParams_threshold';
+					$map['onFor'] = 'insightParams_onFor';
+					$map['todayONTime'] = 'insightParams_onToday';
+
+					foreach ($map as $k => $v) {
+						if (!isset($dev['data'][$k]) && isset($dev['data'][$v])) {
+							$dev['data'][$k] = $dev['data'][$v];
+						}
 					}
 				}
 			}
@@ -84,7 +124,7 @@
 			$devices[] = $dev;
 		}
 
-		if (count($devices) > 0) {
+		if (count($devices) > 0 && !isset($daemon['cli']['debug'])) {
 			$data = json_encode(array('time' => $time, 'devices' => $devices));
 
 			foreach ($collectionServer as $url) {
