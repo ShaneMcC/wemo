@@ -64,8 +64,15 @@
 		$rrdData[] = '--upper-limit ' . $upperLimit;
 		$rrdData[] = '--lower-limit ' . $lowerLimit;
 		$rrdData[] = '--rigid';
-		$rrdData[] = '--vertical-label 'Watts"';
+		$rrdData[] = '--vertical-label "Watts"';
 		$rrdData[] = '--units=si';
+
+		if (isset($graphOpts[$location][$serial]['rrd_flags_' . $type])) {
+			$rrdData = array_merge($rrdData, $graphOpts[$location][$serial]['rrd_flags_' . $type]);
+		} else if (isset($rrdoptions[$type]['flags'])) {
+			$rrdData = array_merge($rrdData, $rrdoptions[$type]['flags']);
+		}
+
 		$rrdData[] = 'DEF:raw="' . $rrd . '":"' . $type . '":AVERAGE';
 		$rrdData[] = 'CDEF:power=raw,1000,/';
 
@@ -81,12 +88,18 @@
 			$rrdData[] = 'CDEF:powerArea' . $i . '=power,' . $val . ',LT,power,' . $val . ',IF CDEF:powerArea' . $i . 'NoUnk=power,UN,0,powerArea' . $i . ',IF AREA:powerArea' . $i . 'NoUnk#' . $col;
 		}
 
-		$rrdData[] = 'LINE:power#080';
+		$rrdData[] = 'LINE:power#000';
 
 		$rrdData[] = 'VDEF:powermax=power,MAXIMUM';
 		$rrdData[] = 'VDEF:poweravg=power,AVERAGE';
 		$rrdData[] = 'VDEF:powermin=power,MINIMUM';
 		$rrdData[] = 'VDEF:powerlast=power,LAST';
+
+		if (isset($graphOpts[$location][$serial]['rrd_defs_' . $type])) {
+			$rrdData = array_merge($rrdData, $graphOpts[$location][$serial]['rrd_defs_' . $type]);
+		} else if (isset($rrdoptions[$type]['defs'])) {
+			$rrdData = array_merge($rrdData, $rrdoptions[$type]['defs']);
+		}
 
 		$rrdData[] = 'COMMENT:"Maximum\: "';
 		$rrdData[] = 'GPRINT:powermax:"%.2lfW\l"';
@@ -99,6 +112,12 @@
 
 		$rrdData[] = 'COMMENT:"Latest\:  "';
 		$rrdData[] = 'GPRINT:powerlast:"%.2lfW\l"';
+
+		if (isset($graphOpts[$location][$serial]['rrd_end_' . $type])) {
+			$rrdData = array_merge($rrdData, $graphOpts[$location][$serial]['rrd_end_' . $type]);
+		} else if (isset($rrdoptions[$type]['end'])) {
+			$rrdData = array_merge($rrdData, $rrdoptions[$type]['end']);
+		}
 
 		if ($debug) { die('<pre>'.print_r($rrdData, true)); }
 

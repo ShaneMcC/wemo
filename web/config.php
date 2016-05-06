@@ -42,6 +42,23 @@
 	$gradients[] = '00ffd0';
 
 	/**
+	 * Extra options for rrdtool.
+	 *
+	 * This should be an array of additional options to pass.
+	 *
+	 * There are 3 places that additional parameters can be passed:
+	 *   - flags: This will add the options after the initial flags, before
+	 *            the DEF/CDEF/VDEFs.
+	 *   - defs: This will add the options after all the DEF/CDEF/VDEFs
+	 *   - end: This will add the options after the closing comments.
+	 *
+	 * Example: $rrdoptions[<graphtype>]['flags'] = array('--slope-mode', '--graph-render-mode mono');
+	 */
+	$rrdoptions['instantPower']['flags'] = array();
+	$rrdoptions['instantPower']['defs'] = array();
+	$rrdoptions['instantPower']['end'] = array();
+
+	/**
 	 * Automatically decide limits for graphs?
 	 *
 	 * If true, then $graphMin and $graphMax are multipliers on the min/max
@@ -55,6 +72,14 @@
 	// Options not set will use the defaults
 	$graphOpts['Home']['ABCDEFGH'] = array('linearGraph' => true, 'graphMin' => 500, 'graphMax' => 2500);
 	$graphOpts['Home']['ABCDEFGHI'] = array('graphMin' => 0.5, 'graphMax' => 1.75, 'autoLimit' => true);
+
+	// It is also possible to specify additional parameters to pass to RRDTOOL
+	// when drawing the graph.
+	//
+	// This should be an array of additional options to pass.
+	//
+	// These will be used INSTEAD OF $rrdoptions values where specified.
+	$graphOpts['Home']['ABCDEFGH']['rrd_flags_instantPower'] = array('--slope-mode', '--graph-render-mode mono');
 
 	$probes = array();
 	// $probes['Home'] = 'SomePassword';
