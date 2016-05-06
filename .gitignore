@@ -1,3 +1,4 @@
 probe/data
 web/rrds
+web/template/user
 */config.user.php
