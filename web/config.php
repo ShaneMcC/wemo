@@ -7,9 +7,10 @@
 	$rrdtool = '/usr/bin/rrdtool';
 
 	/** Default Graph Width. */
-	$graphWidth = 100;
+	$graphWidth = 800;
+
 	/** Default Graph Height. */
-	$graphHeight = 100;
+	$graphHeight = 500;
 
 	/** Should graph be linear rather than exponential? */
 	$linearGraph = false;
