@@ -6,6 +6,11 @@
 	/** Path to rrdtool binary */
 	$rrdtool = '/usr/bin/rrdtool';
 
+	/** Default Graph Width. */
+	$graphWidth = 100;
+	/** Default Graph Height. */
+	$graphHeight = 100;
+
 	/** Should graph be linear rather than exponential? */
 	$linearGraph = false;
 

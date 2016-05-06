@@ -27,6 +27,15 @@
 		}
 	}
 
+	$height = isset($_REQUEST['height']) ? $_REQUEST['height'] : null;
+	$width = isset($_REQUEST['width']) ? $_REQUEST['width'] : null;
+
+	if ($height == null && isset($graphOpts[$location][$serial]['graphHeight'])) { $height = $graphOpts[$location][$serial]['graphHeight']; }
+	if ($width == null && isset($graphOpts[$location][$serial]['graphWidth'])) { $width = $graphOpts[$location][$serial]['graphWidth']; }
+
+	if ($height == null) { $height = $graphHeight; }
+	if ($width == null) { $width = $graphWidth; }
+
 	if (isset($graphOpts[$location][$serial]['graphMin'])) { $graphMin = $graphOpts[$location][$serial]['graphMin']; }
 	if (isset($graphOpts[$location][$serial]['graphMax'])) { $graphMax = $graphOpts[$location][$serial]['graphMax']; }
 	if (isset($graphOpts[$location][$serial]['autoLimit'])) { $autoLimit = $graphOpts[$location][$serial]['autoLimit']; }
@@ -60,7 +69,7 @@
 		if (!$linearGraph) {
 			$rrdData[] = '--logarithmic --units-exponent 0';
 		}
-		$rrdData[] = '--width 800 --height 500';
+		$rrdData[] = '--width ' . (int)$width . ' --height ' . (int)$height;
 		$rrdData[] = '--upper-limit ' . $upperLimit;
 		$rrdData[] = '--lower-limit ' . $lowerLimit;
 		$rrdData[] = '--rigid';
