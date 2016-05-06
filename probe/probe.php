@@ -89,6 +89,7 @@
 					// So now we parse insightParams...
 					//
 					// Based on http://ouimeaux.readthedocs.io/en/latest/_modules/ouimeaux/device/insight.html
+					// also http://home.stockmopar.com/wemo-insight-hacking/
 					if (isset($dev['data']['insightParams'])) {
 						$bits = explode('|', $dev['data']['insightParams']);
 						$dev['data']['insightParams_state'] = $bits[0];
