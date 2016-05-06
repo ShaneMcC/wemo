@@ -64,6 +64,7 @@
 		$rrdData[] = '--upper-limit ' . $upperLimit;
 		$rrdData[] = '--lower-limit ' . $lowerLimit;
 		$rrdData[] = '--rigid';
+		$rrdData[] = '--vertical-label 'Watts"';
 		$rrdData[] = '--units=si';
 		$rrdData[] = 'DEF:raw="' . $rrd . '":"' . $type . '":AVERAGE';
 		$rrdData[] = 'CDEF:power=raw,1000,/';
