@@ -90,6 +90,7 @@
 					//
 					// Based on http://ouimeaux.readthedocs.io/en/latest/_modules/ouimeaux/device/insight.html
 					// also http://home.stockmopar.com/wemo-insight-hacking/
+					// and https://github.com/openhab/openhab/blob/master/bundles/binding/org.openhab.binding.wemo/src/main/java/org/openhab/binding/wemo/internal/WemoBinding.java
 					if (isset($dev['data']['insightParams'])) {
 						$bits = explode('|', $dev['data']['insightParams']);
 						$dev['data']['insightParams_state'] = $bits[0];
