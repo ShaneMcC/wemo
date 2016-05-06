@@ -1,6 +1,8 @@
 <?php
 	require_once(dirname(__FILE__) . '/config.php');
 
+	if (file_exists(dirname(__FILE__) . '/template/user/header.php')) { require_once(dirname(__FILE__) . '/template/user/header.php'); }
+
 	// Basic Graphing to start with.
 
 	$type = 'instantPower';
@@ -16,3 +18,5 @@
 			}
 		}
 	}
+
+	if (file_exists(dirname(__FILE__) . '/template/user/footer.php')) { require_once(dirname(__FILE__) . '/template/user/footer.php'); }
