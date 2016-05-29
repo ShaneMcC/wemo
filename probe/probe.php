@@ -58,8 +58,9 @@
 			echo sprintf('Found: %s / %s [%s:%s -> %s]' . "\n", $dev['name'], $dev['serial'], $dev['ip'], $dev['port'], $device['location']);
 
 			if (isset($daemon['cli']['search'])) { continue; }
+			if (!isset($xml->device->serviceList->service)) { continue; }
 			foreach ($xml->device->serviceList->service as $service) {
-				if ($service->serviceType == $insightService) {
+				if (isset($service->serviceType) && $service->serviceType == $insightService) {
 					$url = phpUri::parse($device['location'])->join($service->controlURL);
 
 					$soap = new SoapClient(null, array('location' => $url, 'uri' => $insightService));
