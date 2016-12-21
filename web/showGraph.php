@@ -6,6 +6,8 @@
 	$type = isset($_REQUEST['type']) ? $_REQUEST['type'] : null;
 	$location = isset($_REQUEST['location']) ? $_REQUEST['location'] : null;
 	$serial = isset($_REQUEST['serial']) ? $_REQUEST['serial'] : null;
+	$days = isset($_REQUEST['days']) ? $_REQUEST['days'] : null;
+	$step = isset($_REQUEST['step']) ? $_REQUEST['step'] : null;
 
 	$debug = isset($_REQUEST['debug']);
 
@@ -69,6 +71,10 @@
 		if (!$linearGraph) {
 			$rrdData[] = '--logarithmic --units-exponent 0';
 		}
+
+		if (preg_match('#^[0-9]+$#', $days)) { $rrdData[] = '--start "-' . (int)$days . ' days"'; }
+		if (preg_match('#^[0-9]+$#', $step)) { $rrdData[] = '--step ' . (int)$step; }
+
 		$rrdData[] = '--width ' . (int)$width . ' --height ' . (int)$height;
 		$rrdData[] = '--upper-limit ' . $upperLimit;
 		$rrdData[] = '--lower-limit ' . $lowerLimit;
