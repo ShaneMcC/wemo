@@ -33,3 +33,14 @@
 	if (file_exists(dirname(__FILE__) . '/config.user.php')) {
 		require_once(dirname(__FILE__) . '/config.user.php');
 	}
+
+	if (!function_exists('afterProbeAction')) {
+		/**
+		 * Function to run after finding all wemo devices to perform
+		 * additional tasks.
+		 * (Saves modules needing to re-scan every time.)
+		 *
+		 * @param $devices Devices array
+		 */
+		function afterProbeAction($devices) { }
+	}

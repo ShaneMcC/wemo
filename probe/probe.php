@@ -59,8 +59,12 @@
 
 			if (isset($daemon['cli']['search'])) { continue; }
 			if (!isset($xml->device->serviceList->service)) { continue; }
-			foreach ($xml->device->serviceList->service as $service) {
-				if (isset($service->serviceType) && $service->serviceType == $insightService) {
+				foreach ($xml->device->serviceList->service as $service) {
+				if (!isset($service->serviceType) || !isset($service->controlURL)) { continue; }
+				$url = phpUri::parse($device['location'])->join($service->controlURL);
+				$dev['services'][(string)$service->serviceType] = $url;
+
+				if ($service->serviceType == $insightService) {
 					$url = phpUri::parse($device['location'])->join($service->controlURL);
 
 					$soap = new SoapClient(null, array('location' => $url, 'uri' => $insightService));
@@ -203,3 +207,5 @@
 			}
 		}
 	}
+
+	if (count($devices) > 0) { afterProbeAction($devices); }
