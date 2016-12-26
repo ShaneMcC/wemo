@@ -15,8 +15,27 @@
 		                     ];
 	}
 
+	// If the params are not passed to us, abort.
+	if ($type == null || $location == null || $serial == null) { die('Internal Error.'); }
+
+	// If the params look dodgy, abort.
+	if (preg_match('#[^A-Z0-9-_ ]#i', $location) || preg_match('#[^A-Z0-9-_]#i', $serial)) { die('Internal Error.'); }
+
+	$dir = $rrdDir . '/' . $location . '/' . $serial;
+	$rrd = $dir . '/' . $type . '.rrd';
+	$meta = $dir . '/meta.js';
+
+	$title = $type . ' for ' . $location . ': ' . $serial;
+	if (file_exists($meta)) {
+		$meta = @json_decode(file_get_contents($meta), true);
+		if ($meta !== null) {
+			$title = $type . ' for ' . $location . ': ' . $meta['name'];
+		}
+	}
+	if (isset($graphOpts[$location][$serial]['title_' . $type])) { $title = $graphOpts[$location][$serial]['title_' . $type]; }
+
 	echo '<h1>';
-	echo htmlspecialchars($type), ' for ', htmlspecialchars($location . ': ' . $serial);
+	echo htmlspecialchars($title);
 	echo '</h1>';
 	echo '<a href="./">[ Back to all graphs ]</a>';
 	echo '<hr>';
