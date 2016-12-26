@@ -21,6 +21,11 @@
 
 	if (!file_exists($rrdtool)) { die(json_encode(array('error' => 'Internal Error'))); }
 
+
+	$DATATYPES = array();
+	$DATATYPES['instantPower'] = ['instantPower', 'GAUGE'];
+	$DATATYPES['REAL_POWER'] = ['REAL_POWER', 'GAUGE'];
+
 	$postdata = file_get_contents("php://input");
 	$data = @json_decode($postdata, true);
 	if ($data === null) { die(json_encode(array('error' => 'Invalid Data'))); }
@@ -36,35 +41,44 @@
 		unset($meta['data']);
 		@file_put_contents($dir . '/meta.js', json_encode($meta));
 
-		// =====================================================================
-		// Store instantPower
-		// =====================================================================
-		// Based on https://www.chameth.com/2016/05/02/monitoring-power-with-wemo.html
-		$instantPower = $dir . '/instantPower.rrd';
-		if (!file_exists($instantPower)) {
-			$rrdData = array();
-			$rrdData[] = 'create "' . $instantPower . '"';
-			$rrdData[] = '--start ' . $data['time'];
-			$rrdData[] = '--step 60';
-			$rrdData[] = 'DS:instantPower:GAUGE:120:U:U';
-			$rrdData[] = 'RRA:AVERAGE:0.5:1:1440';
-			$rrdData[] = 'RRA:AVERAGE:0.5:10:1008';
-			$rrdData[] = 'RRA:AVERAGE:0.5:30:1488';
-			$rrdData[] = 'RRA:AVERAGE:0.5:120:1488';
-			$rrdData[] = 'RRA:AVERAGE:0.5:360:1488';
-			$rrdData[] = 'RRA:AVERAGE:0.5:1440:36500';
+		foreach ($dev['data'] as $dataPoint => $dataValue) {
+			if (!isset($DATATYPES[$dataPoint])) { continue; }
 
-			execRRDTool($rrdData);
+			list($dsname, $dstype) = $DATATYPES[$dataPoint];
+			$storeValue = $dataValue;
+
+			$rrdDataFile = $dir . '/'.$dsname.'.rrd';
+			if (!file_exists($rrdDataFile)) { createRRD($rrdDataFile, $dsname, $dstype, $data['time']); }
+			if (!file_exists($rrdDataFile)) { die(json_encode(array('error' => 'Internal Error'))); }
+
+			updateRRD($rrdDataFile, $dsname, $data['time'], $storeValue);
 		}
-		if (!file_exists($instantPower)) { die(json_encode(array('error' => 'Internal Error'))); }
+	}
 
+	function createRRD($filename, $dsdata, $dstype, $startTime) {
+		// Based on https://www.chameth.com/2016/05/02/monitoring-power-with-wemo.html
 		$rrdData = array();
-		$rrdData[] = 'update "' . $instantPower . '"';
-		// $rrdData[] = '--skip-past-updates';
-		$rrdData[] = '--template instantPower';
-		$rrdData[] = $data['time'] . ':' . $dev['data']['instantPower'];
+		$rrdData[] = 'create "' . $filename . '"';
+		$rrdData[] = '--start ' . $startTime;
+		$rrdData[] = '--step 60';
+		$rrdData[] = 'DS:' . $dsname . ':' . $dstype . ':120:U:U';
+		$rrdData[] = 'RRA:AVERAGE:0.5:1:1440';
+		$rrdData[] = 'RRA:AVERAGE:0.5:10:1008';
+		$rrdData[] = 'RRA:AVERAGE:0.5:30:1488';
+		$rrdData[] = 'RRA:AVERAGE:0.5:120:1488';
+		$rrdData[] = 'RRA:AVERAGE:0.5:360:1488';
+		$rrdData[] = 'RRA:AVERAGE:0.5:1440:36500';
+
 		execRRDTool($rrdData);
-		// =====================================================================
+	}
+
+	function updateRRD($filename, $dsname, $time, $value) {
+		$rrdData = array();
+		$rrdData[] = 'update "' . $instantPowerFile . '"';
+		// $rrdData[] = '--skip-past-updates';
+		$rrdData[] = '--template ' . $dsname;
+		$rrdData[] = $time . ':' . $value;
+		execRRDTool($rrdData);
 	}
 
 	die(json_encode(array('success' => 'ok')));
