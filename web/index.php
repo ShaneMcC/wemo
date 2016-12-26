@@ -8,8 +8,8 @@
 
 	// Submit Data.
 	if (file_exists($rrdDir) && is_dir($rrdDir)) {
-		foreach (glob($rrdDir . '/*/*/' . $type . '.rrd') as $rrd) {
-			foreach ($types as $type) {
+		foreach ($types as $type) {
+			foreach (glob($rrdDir . '/*/*/' . $type . '.rrd') as $rrd) {
 				if (preg_match('#/([^/]+)/([^/]+)/' . $type . '.rrd#', $rrd, $m)) {
 					$location = $m[1];
 					$serial = $m[2];
