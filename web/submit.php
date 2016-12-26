@@ -55,7 +55,7 @@
 		}
 	}
 
-	function createRRD($filename, $dsdata, $dstype, $startTime) {
+	function createRRD($filename, $dsname, $dstype, $startTime) {
 		// Based on https://www.chameth.com/2016/05/02/monitoring-power-with-wemo.html
 		$rrdData = array();
 		$rrdData[] = 'create "' . $filename . '"';
@@ -74,7 +74,7 @@
 
 	function updateRRD($filename, $dsname, $time, $value) {
 		$rrdData = array();
-		$rrdData[] = 'update "' . $instantPowerFile . '"';
+		$rrdData[] = 'update "' . $filename . '"';
 		// $rrdData[] = '--skip-past-updates';
 		$rrdData[] = '--template ' . $dsname;
 		$rrdData[] = $time . ':' . $value;
