@@ -50,7 +50,11 @@
 			$rrdData = array();
 			$rrdData[] = 'graph /dev/null';
 			$rrdData[] = 'DEF:raw="' . $rrd . '":"' . $type . '":AVERAGE';
-			$rrdData[] = 'CDEF:power=raw,1000,/';
+			if ($type == 'instantPower') {
+				$rrdData[] = 'CDEF:power=raw,1000,/';
+			} else if ($type == 'REAL_POWER') {
+				$rrdData[] = 'CDEF:power=raw';
+			}
 			$rrdData[] = 'VDEF:powermax=power,MAXIMUM';
 			$rrdData[] = 'VDEF:powermin=power,MINIMUM';
 			$rrdData[] = 'PRINT:powermin:"%lf"';
@@ -89,7 +93,11 @@
 		}
 
 		$rrdData[] = 'DEF:raw="' . $rrd . '":"' . $type . '":AVERAGE';
-		$rrdData[] = 'CDEF:power=raw,1000,/';
+		if ($type == 'instantPower') {
+			$rrdData[] = 'CDEF:power=raw,1000,/';
+		} else if ($type == 'REAL_POWER') {
+			$rrdData[] = 'CDEF:power=raw';
+		}
 
 		$i = count($gradients);
 		foreach ($gradients as $val => $col) {
