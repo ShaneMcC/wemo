@@ -45,7 +45,7 @@
 	if (isset($graphOpts[$location][$serial]['title_' . $type])) { $title = $graphOpts[$location][$serial]['title_' . $type]; }
 
 	// Originally based on https://www.chameth.com/2016/05/02/monitoring-power-with-wemo.html
-	if ($type == 'instantPower') {
+	if ($type == 'instantPower' || $type == 'REAL_POWER') {
 		if ($autoLimit) {
 			$rrdData = array();
 			$rrdData[] = 'graph /dev/null';
