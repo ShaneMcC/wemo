@@ -45,6 +45,11 @@
 	echo '<hr>';
 
 	echo '<form method="GET">';
+	foreach ($_REQUEST as $k => $v) {
+		if ($k != 'start' && $k != 'end') {
+			echo '  <input type="hidden" name="', htmlspecialchars($k), '" value="', htmlspecialchars($v),'">';
+		}
+	}
 	echo '  Start: ';
 	echo '  <input type="text" name="start" value="', htmlspecialchars($start),'">';
 	echo '  End:';
