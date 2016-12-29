@@ -95,8 +95,8 @@
 		if (preg_match('#^[0-9]+$#', $step)) { $rrdData[] = '--step ' . (int)$step; }
 
 		$rrdData[] = '--width ' . (int)$width . ' --height ' . (int)$height;
-		$rrdData[] = '--upper-limit ' . $upperLimit;
-		$rrdData[] = '--lower-limit ' . $lowerLimit;
+		$rrdData[] = '--upper-limit ' . ceil($upperLimit);
+		$rrdData[] = '--lower-limit ' . floor($lowerLimit);
 		$rrdData[] = '--rigid';
 		$rrdData[] = '--vertical-label "Watts"';
 		$rrdData[] = '--units=si';
