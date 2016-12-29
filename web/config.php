@@ -100,10 +100,10 @@
 	$graphOpts['Home']['ABCDEFGH']['rrd_flags_instantPower'] = array('--slope-mode', '--graph-render-mode mono');
 
 	// Graphs to display in historical view.
-	$historicalOptions = ['1 Day' => ['days' => 1],
-	                      '10 Days' => ['days' => 10],
-	                      'One Month' => ['days' => 30],
-	                      'One Year' => ['days' => 360],
+	$historicalOptions = ['1 Day' => ['start' => '-1 days'],
+	                      '10 Days' => ['start' => '-10 days'],
+	                      'One Month' => ['start' => '-1 month'],
+	                      'One Year' => ['start' => '-1 year'],
 	                     ];
 
 	$probes = array();
