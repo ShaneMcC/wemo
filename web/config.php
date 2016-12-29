@@ -129,7 +129,7 @@
 		 * @return Array of extra lines to pass to rrdtool.
 		 */
 		function getCustomSettings($location, $serial, $type, $position) {
-			global $graphOpts $rrdoptions;
+			global $graphOpts, $rrdoptions;
 
 			if (getGraphOption($location, $serial, 'rrd_'.$position.'_' . $type, null) !== null) {
 				return getGraphOption($location, $serial, 'rrd_'.$position.'_' . $type, null);
