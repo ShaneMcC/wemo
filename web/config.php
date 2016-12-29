@@ -31,7 +31,7 @@
 	$graphStart = '-1 week';
 
 	/** Line colour on top of the gradient */
-	$lineColour = '#000000'
+	$lineColour = '#000000';
 
 	/** Gradient for graphs. */
 	$gradients = array();
