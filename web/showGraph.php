@@ -72,8 +72,8 @@
 			$rrdData[] = 'PRINT:powermax:"%lf"';
 			$out = execRRDTool($rrdData);
 			$bits = explode("\n", $out['stdout']);
-			$lowerLimit = function_exists('getLowerLimit') ? getLowerLimit($bits[1]) : max(floor($bits[1]) * $graphMin, 1);
-			$upperLimit = function_exists('getUpperLimit') ? getUpperLimit($bits[2]) : max(ceil($bits[2]) * $graphMax, 1);
+			$lowerLimit = max(function_exists('getLowerLimit') ? getLowerLimit($bits[1]) : (floor($bits[1]) * $graphMin), 0);
+			$upperLimit = max(function_exists('getUpperLimit') ? getUpperLimit($bits[2]) : (ceil($bits[2]) * $graphMax), 0);
 		} else {
 			$lowerLimit = $graphMin;
 			$upperLimit = $graphMax;
