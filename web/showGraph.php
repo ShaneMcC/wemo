@@ -5,7 +5,7 @@
 
 	$noTitle = isset($_REQUEST['noTitle']);
 	$noAxis = isset($_REQUEST['noAxis']);
-	$noComments = isset($_REQUEST['noComments']);
+	$noLegend = isset($_REQUEST['noLegend']);
 
 	require_once(dirname(__FILE__) . '/config.php');
 	require_once(dirname(__FILE__) . '/functions.php');
@@ -107,6 +107,7 @@
 		} else {
 			$rrdData[] = '--vertical-label "Watts"';
 		}
+		if ($noLegend) { $rrdData[] = '-g'; }
 		$rrdData[] = '--units=si';
 
 		$rrdData = array_merge($rrdData, getCustomSettings($location, $serial, $type, 'flags'));
@@ -139,7 +140,7 @@
 
 		$rrdData = array_merge($rrdData, getCustomSettings($location, $serial, $type, 'defs'));
 
-		if (!$noComments && $showDataComments) {
+		if ($showDataComments) {
 			$rrdData[] = 'COMMENT:"Maximum\: "';
 			$rrdData[] = 'GPRINT:powermax:"%.2lfW\l"';
 
