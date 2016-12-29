@@ -79,7 +79,7 @@
 		if ($end !== '') { $historicalOptions['custom']['end'] = $end; }
 		if (isset($_REQUEST['step'])) { $historicalOptions['custom']['step'] = $_REQUEST['step']; }
 
-		$historicalOptions['title'] = $start . ' to ' . $end;
+		$historicalOptions['custom']['title'] = $start . ' to ' . $end;
 	}
 
 	foreach ($historicalOptions as $name => $setting) {
