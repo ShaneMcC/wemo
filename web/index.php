@@ -1,6 +1,7 @@
 <?php
 	require_once(dirname(__FILE__) . '/config.php');
 
+	$pageName = 'index';
 	if (file_exists(dirname(__FILE__) . '/template/user/header.php')) { require_once(dirname(__FILE__) . '/template/user/header.php'); }
 
 	// Basic Graphing to start with.

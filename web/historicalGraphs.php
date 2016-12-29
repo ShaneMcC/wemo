@@ -1,8 +1,6 @@
 <?php
 	require_once(dirname(__FILE__) . '/config.php');
 
-	if (file_exists(dirname(__FILE__) . '/template/user/header.php')) { require_once(dirname(__FILE__) . '/template/user/header.php'); }
-
 	$type = isset($_REQUEST['type']) ? $_REQUEST['type'] : null;
 	$location = isset($_REQUEST['location']) ? $_REQUEST['location'] : null;
 	$serial = isset($_REQUEST['serial']) ? $_REQUEST['serial'] : null;
@@ -34,8 +32,12 @@
 	}
 	if (isset($graphOpts[$location][$serial]['title_' . $type])) { $title = $graphOpts[$location][$serial]['title_' . $type]; }
 
+
+	$pageName = 'historicalGraphs';
+	if (file_exists(dirname(__FILE__) . '/template/user/header.php')) { require_once(dirname(__FILE__) . '/template/user/header.php'); }
+
 	echo '<h1>';
-	echo htmlspecialchars($title);
+	echo isset($pageTitle) ? htmlspecialchars($pageTitle) : htmlspecialchars($title);
 	echo '</h1>';
 	echo '<a href="./">[ Back to all graphs ]</a>';
 	echo '<hr>';
