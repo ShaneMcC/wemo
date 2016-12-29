@@ -5,7 +5,7 @@
 	require_once(dirname(__FILE__) . '/config.php');
 	require_once(dirname(__FILE__) . '/functions.php');
 
-	// Params we care about.
+	// Params we care about (unmolested by the config, just in case.)
 	$type = isset($_REQUEST['type']) ? $_REQUEST['type'] : null;
 	$location = isset($_REQUEST['location']) ? $_REQUEST['location'] : null;
 	$serial = isset($_REQUEST['serial']) ? $_REQUEST['serial'] : null;
@@ -72,8 +72,8 @@
 			$rrdData[] = 'PRINT:powermax:"%lf"';
 			$out = execRRDTool($rrdData);
 			$bits = explode("\n", $out['stdout']);
-			$lowerLimit = max(floor($bits[1]) * $graphMin, 1);
-			$upperLimit = max(ceil($bits[2]) * $graphMax, 1);
+			$lowerLimit = function_exists('getLowerLimit') ? getLowerLimit($bits[1]) : max(floor($bits[1]) * $graphMin, 1);
+			$upperLimit = function_exists('getUpperLimit') ? getUpperLimit($bits[2]) : max(ceil($bits[2]) * $graphMax, 1);
 		} else {
 			$lowerLimit = $graphMin;
 			$upperLimit = $graphMax;
