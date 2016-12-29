@@ -15,6 +15,9 @@
 	/** Should graph be linear rather than exponential? */
 	$linearGraph = false;
 
+	/** Allow showGraphn debug outputs to be used. */
+ 	$allowDebug = true;
+
 	/** Lower Limit for graphs. */
 	$graphMin = 20;
 

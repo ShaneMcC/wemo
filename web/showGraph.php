@@ -11,8 +11,8 @@
 	$end = isset($_REQUEST['end']) ? $_REQUEST['end'] : null;
 	$step = isset($_REQUEST['step']) ? $_REQUEST['step'] : null;
 
-	$debug = isset($_REQUEST['debug']);
-	$debugOut = isset($_REQUEST['debugOut']);
+	$debug = isset($_REQUEST['debug']) && $allowDebug;
+	$debugOut = isset($_REQUEST['debugOut']) && $allowDebug;
 
 	// If the params are not passed to us, abort.
 	if ($type == null || $location == null || $serial == null) { die('Internal Error.'); }
