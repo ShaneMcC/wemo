@@ -39,6 +39,13 @@
 	$title = getGraphOption($location, $serial, 'title_' . $type, $title);
 
 	if (file_exists(dirname(__FILE__) . '/template/user/header.php')) { require_once(dirname(__FILE__) . '/template/user/header.php'); }
+	else {
+		echo '<html><head><title>Historical Power Graphs :: ', isset($pageTitle) ? htmlspecialchars($pageTitle) : htmlspecialchars($title), '</title></head>';
+		echo '<body>';
+		echo '<style>';
+		echo 'div.graph { display: inline-block; } ';
+		echo '</style>';
+	}
 
 	echo '<div class="historicalHeader">';
 	echo '<h1>';
@@ -106,3 +113,7 @@
 	}
 
 	if (file_exists(dirname(__FILE__) . '/template/user/footer.php')) { require_once(dirname(__FILE__) . '/template/user/footer.php'); }
+	else {
+		echo '</body>';
+		echo '</html>';
+	}

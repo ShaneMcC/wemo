@@ -5,6 +5,13 @@
 	require_once(dirname(__FILE__) . '/config.php');
 
 	if (file_exists(dirname(__FILE__) . '/template/user/header.php')) { require_once(dirname(__FILE__) . '/template/user/header.php'); }
+	else {
+		echo '<html><head><title>Power Graphs</title></head>';
+		echo '<body>';
+		echo '<style>';
+		echo 'div.graph { display: inline-block; } ';
+		echo '</style>';
+	}
 
 	// Basic Graphing to start with.
 	$types = ['instantPower', 'REAL_POWER'];
@@ -38,3 +45,7 @@
 	}
 
 	if (file_exists(dirname(__FILE__) . '/template/user/footer.php')) { require_once(dirname(__FILE__) . '/template/user/footer.php'); }
+	else {
+		echo '</body>';
+		echo '</html>';
+	}
