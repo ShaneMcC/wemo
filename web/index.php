@@ -24,7 +24,7 @@
 					$serialClass = 'serial_' . preg_replace('#[^a-z0-9]#i', $serial);
 
 					echo '<a href="./historicalGraphs.php?', http_build_query($options), '">';
-					echo '<img class="graph ', $typeClass, ' ', $serialClass, '" src="./showGraph.php?', http_build_query($options), '" alt="', $type, ' for ', htmlspecialchars($location . ': ' . $serial), '">';
+					echo '<img class="graph index ', $typeClass, ' ', $serialClass, '" src="./showGraph.php?', http_build_query($options), '" alt="', $type, ' for ', htmlspecialchars($location . ': ' . $serial), '">';
 					echo '</a>';
 				}
 			}

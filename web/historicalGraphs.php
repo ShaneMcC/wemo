@@ -44,7 +44,7 @@
 	echo '<a href="./">[ Back to all graphs ]</a>';
 	echo '<hr>';
 
-	echo '<form method="GET">';
+	echo '<form method="GET" style="display: inline">';
 	foreach ($_REQUEST as $k => $v) {
 		if ($k != 'start' && $k != 'end') {
 			echo '  <input type="hidden" name="', htmlspecialchars($k), '" value="', htmlspecialchars($v),'">';
@@ -57,7 +57,7 @@
 	echo '  <input type="submit" value="Submit">';
 	echo '</form>';
 
-	echo '<form method="GET">';
+	echo '<form method="GET" style="display: inline">';
 	foreach ($_REQUEST as $k => $v) {
 		if ($k != 'start' && $k != 'end') {
 			echo '  <input type="hidden" name="', htmlspecialchars($k), '" value="', htmlspecialchars($v),'">';
