@@ -56,6 +56,15 @@
 	echo '  <input type="text" name="end" value="', htmlspecialchars($end),'">';
 	echo '  <input type="submit" value="Submit">';
 	echo '</form>';
+
+	echo '<form method="GET">';
+	foreach ($_REQUEST as $k => $v) {
+		if ($k != 'start' && $k != 'end') {
+			echo '  <input type="hidden" name="', htmlspecialchars($k), '" value="', htmlspecialchars($v),'">';
+		}
+	}
+	echo '  <input type="submit" value="Reset">';
+	echo '</form>';
 	echo '<hr>';
 
 	if ($start !== '' || $end !== '') {

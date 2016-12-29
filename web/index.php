@@ -15,8 +15,13 @@
 					$location = $m[1];
 					$serial = $m[2];
 
-					echo '<a href="./historicalGraphs.php?type=', urlencode($type), '&location=', urlencode($location), '&serial=', urlencode($serial), '">';
-					echo '<img src="./showGraph.php?type=', urlencode($type), '&location=', urlencode($location), '&serial=', urlencode($serial), '" alt="', $type, ' for ',htmlspecialchars($location . ': ' . $serial), '">';
+					$options = [];
+					$options['type'] = $type;
+					$options['location'] = $location;
+					$options['serial'] = $serial;
+
+					echo '<a href="./historicalGraphs.php?', http_build_query($options), '">';
+					echo '<img src="./showGraph.php?', http_build_query($options), '" alt="', $type, ' for ', htmlspecialchars($location . ': ' . $serial), '">';
 					echo '</a>';
 				}
 			}
