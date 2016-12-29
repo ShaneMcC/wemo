@@ -2,10 +2,15 @@
 	$pageName = 'showGraph';
 	$graphPage = isset($_REQUEST['graphPage']) ? $_REQUEST['graphPage'] : $pageName;
 	$graphCustom = isset($_REQUEST['graphCustom']) ? $_REQUEST['graphCustom'] : '';
+
+	$noTitle = isset($_REQUEST['noTitle']);
+	$noAxis = isset($_REQUEST['noAxis']);
+	$noComments = isset($_REQUEST['noComments']);
+
 	require_once(dirname(__FILE__) . '/config.php');
 	require_once(dirname(__FILE__) . '/functions.php');
 
-	// Params we care about (unmolested by the config, just in case.)
+	// Params we care about
 	$type = isset($_REQUEST['type']) ? $_REQUEST['type'] : null;
 	$location = isset($_REQUEST['location']) ? $_REQUEST['location'] : null;
 	$serial = isset($_REQUEST['serial']) ? $_REQUEST['serial'] : null;
@@ -83,7 +88,7 @@
 
 		$rrdData = array();
 		$rrdData[] = 'graph -';
-		$rrdData[] = '--title "' . $title . '"';
+		if (!$noTitle) { $rrdData[] = '--title "' . $title . '"'; }
 		if (!$linearGraph) {
 			$rrdData[] = '--logarithmic --units-exponent 0';
 		}
@@ -97,7 +102,11 @@
 		$rrdData[] = '--upper-limit ' . ceil($upperLimit);
 		$rrdData[] = '--lower-limit ' . floor($lowerLimit);
 		$rrdData[] = '--rigid';
-		$rrdData[] = '--vertical-label "Watts"';
+		if ($noAxis) {
+			$rrdData[] = '-y-grid none -x-grid none';
+		} else {
+			$rrdData[] = '--vertical-label "Watts"';
+		}
 		$rrdData[] = '--units=si';
 
 		$rrdData = array_merge($rrdData, getCustomSettings($location, $serial, $type, 'flags'));
@@ -130,7 +139,7 @@
 
 		$rrdData = array_merge($rrdData, getCustomSettings($location, $serial, $type, 'defs'));
 
-		if ($showDataComments) {
+		if (!$noComments && $showDataComments) {
 			$rrdData[] = 'COMMENT:"Maximum\: "';
 			$rrdData[] = 'GPRINT:powermax:"%.2lfW\l"';
 
