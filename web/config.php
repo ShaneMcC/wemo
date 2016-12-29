@@ -24,11 +24,11 @@
 	/** Upper Limit for graphs. */
 	$graphMax = 2000;
 
-	/** Default graph steps */
-	$graphSteps = 1;
+	/** Default graph steps (Default: empty, let rrdtool decide) */
+	$graphSteps = '';
 
-	/** Default graph start */
-	$graphStart = '-1 day';
+	/** Default graph start (Default: empty, let rrdtool decide) */
+	$graphStart = '';
 
 	/** Line colour on top of the gradient */
 	$lineColour = '#000000';
