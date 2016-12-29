@@ -94,7 +94,7 @@
 			$options['days'] = $days;
 			$options['step'] = $step;
 
-			$nameClass = 'historical_' . preg_replace('#[^a-z0-9]#i', $name);
+			$nameClass = 'historical_' . preg_replace('#[^a-z0-9]#i', '', $name);
 			echo '<h2>', htmlspecialchars($name), '</h2>';
 			echo '<img class="graph historical ', $nameClass, ' ', $typeClass, ' ', $serialClass, '" src="./showGraph.php?', http_build_query($options), '" alt="', htmlspecialchars($name) , ' - ', htmlspecialchars($type), ' for ', htmlspecialchars($location . ': ' . $serial), '">';
 			echo '<hr>';
