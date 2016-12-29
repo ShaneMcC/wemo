@@ -48,6 +48,7 @@
 	$autoLimit = getGraphOption($location, $serial, 'autoLimit', $autoLimit);
 	$linearGraph = getGraphOption($location, $serial, 'linearGraph', $linearGraph);
 	$title = getGraphOption($location, $serial, 'title_' . $type, $title);
+	$showDataComments = getGraphOption($location, $serial, 'dataComments', $showDataComments);
 
 	// Originally based on https://www.chameth.com/2016/05/02/monitoring-power-with-wemo.html
 	if ($type == 'instantPower' || $type == 'REAL_POWER') {
@@ -129,17 +130,19 @@
 
 		$rrdData = array_merge($rrdData, getCustomSettings($location, $serial, $type, 'defs'));
 
-		$rrdData[] = 'COMMENT:"Maximum\: "';
-		$rrdData[] = 'GPRINT:powermax:"%.2lfW\l"';
+		if ($showDataComments) {
+			$rrdData[] = 'COMMENT:"Maximum\: "';
+			$rrdData[] = 'GPRINT:powermax:"%.2lfW\l"';
 
-		$rrdData[] = 'COMMENT:"Average\: "';
-		$rrdData[] = 'GPRINT:poweravg:"%.2lfW\l"';
+			$rrdData[] = 'COMMENT:"Average\: "';
+			$rrdData[] = 'GPRINT:poweravg:"%.2lfW\l"';
 
-		$rrdData[] = 'COMMENT:"Minimum\: "';
-		$rrdData[] = 'GPRINT:powermin:"%.2lfW\l"';
+			$rrdData[] = 'COMMENT:"Minimum\: "';
+			$rrdData[] = 'GPRINT:powermin:"%.2lfW\l"';
 
-		$rrdData[] = 'COMMENT:"Latest\:  "';
-		$rrdData[] = 'GPRINT:powerlast:"%.2lfW\l"';
+			$rrdData[] = 'COMMENT:"Latest\:  "';
+			$rrdData[] = 'GPRINT:powerlast:"%.2lfW\l"';
+		}
 
 		$rrdData = array_merge($rrdData, getCustomSettings($location, $serial, $type, 'end'));
 
