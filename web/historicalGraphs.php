@@ -89,9 +89,9 @@
 		$options['serial'] = $serial;
 		$options['graphPage'] = $pageName;
 		$options['graphCustom'] = $graphCustom;
-		if (isset($setting['start'])) { $options['start'] = $start; }
-		if (isset($setting['step'])) { $options['step'] = $step; }
-		if (isset($setting['end'])) { $options['end'] = $step; }
+		if (isset($setting['start'])) { $options['start'] = $setting['start']; }
+		if (isset($setting['step'])) { $options['step'] = $setting['step']; }
+		if (isset($setting['end'])) { $options['end'] = $setting['end']; }
 
 		$nameClass = 'historical_' . preg_replace('#[^a-z0-9]#i', '', $name);
 		echo '<h2>', htmlspecialchars(isset($setting['title']) ? $setting['title'] : $name), '</h2>';
