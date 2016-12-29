@@ -45,10 +45,11 @@
 	echo '<hr>';
 
 	echo '<form method="GET">';
-	echo '  Start:<br>';
-	echo '  <input type="text" name="start"><br>';
-	echo '  End:<br>';
-	echo '  <input type="text" name="end">';
+	echo '  Start: ';
+	echo '  <input type="text" name="start" value="', htmlspecialchars($start),'">';
+	echo '  End:';
+	echo '  <input type="text" name="end" value="', htmlspecialchars($end),'">';
+	echo '  <input type="submit" value="Submit">';
 	echo '</form>';
 	echo '<hr>';
 
