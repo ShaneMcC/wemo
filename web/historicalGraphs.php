@@ -40,13 +40,16 @@
 
 	if (file_exists(dirname(__FILE__) . '/template/user/header.php')) { require_once(dirname(__FILE__) . '/template/user/header.php'); }
 
+	echo '<div class="historicalHeader">';
 	echo '<h1>';
 	echo isset($pageTitle) ? htmlspecialchars($pageTitle) : htmlspecialchars($title);
 	echo '</h1>';
-	echo '<a href="./', (!empty($graphCustom) ? '?graphCustom=' . urlencode($graphCustom) : ''), '">[ Back to all graphs ]</a>';
+	echo '<a class="backLink" href="./', (!empty($graphCustom) ? '?graphCustom=' . urlencode($graphCustom) : ''), '">[ Back to all graphs ]</a>';
 	echo '<hr>';
+	echo '</div>';
 
-	echo '<form method="GET" style="display: inline">';
+	echo '<div class="timeSelector">';
+	echo '<form class="selector" method="GET" style="display: inline">';
 	foreach ($_REQUEST as $k => $v) {
 		if ($k != 'start' && $k != 'end') {
 			echo '  <input type="hidden" name="', htmlspecialchars($k), '" value="', htmlspecialchars($v),'">';
@@ -59,7 +62,7 @@
 	echo '  <input type="submit" value="Submit">';
 	echo '</form>';
 
-	echo '<form method="GET" style="display: inline">';
+	echo '<form class="resetButton" method="GET" style="display: inline">';
 	foreach ($_REQUEST as $k => $v) {
 		if ($k != 'start' && $k != 'end') {
 			echo '  <input type="hidden" name="', htmlspecialchars($k), '" value="', htmlspecialchars($v),'">';
@@ -68,6 +71,7 @@
 	echo '  <input type="submit" value="Reset">';
 	echo '</form>';
 	echo '<hr>';
+	echo '</div>';
 
 	$typeClass = 'type_' . preg_replace('#[^a-z0-9]#i', '', $type);
 	$serialClass = 'serial_' . preg_replace('#[^a-z0-9]#i', '', $serial);
@@ -94,9 +98,11 @@
 		if (isset($setting['end'])) { $options['end'] = $setting['end']; }
 
 		$nameClass = 'historical_' . preg_replace('#[^a-z0-9]#i', '', $name);
+		echo '<div class="graph historical ', $nameClass, ' ', $typeClass, ' ', $serialClass, '">';
 		echo '<h2>', htmlspecialchars(isset($setting['title']) ? $setting['title'] : $name), '</h2>';
-		echo '<img class="graph historical ', $nameClass, ' ', $typeClass, ' ', $serialClass, '" src="./showGraph.php?', http_build_query($options), '" alt="', htmlspecialchars($name) , ' - ', htmlspecialchars($type), ' for ', htmlspecialchars($location . ': ' . $serial), '">';
+		echo '<img src="./showGraph.php?', http_build_query($options), '" alt="', htmlspecialchars($name) , ' - ', htmlspecialchars($type), ' for ', htmlspecialchars($location . ': ' . $serial), '">';
 		echo '<hr>';
+		echo '</div>';
 	}
 
 	if (file_exists(dirname(__FILE__) . '/template/user/footer.php')) { require_once(dirname(__FILE__) . '/template/user/footer.php'); }

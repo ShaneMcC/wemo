@@ -27,9 +27,11 @@
 					$typeClass = 'type_' . preg_replace('#[^a-z0-9]#i', '', $type);
 					$serialClass = 'serial_' . preg_replace('#[^a-z0-9]#i', '', $serial);
 
+					echo '<div class="graph index ', $typeClass, ' ', $serialClass, '">';
 					echo '<a href="./historicalGraphs.php?', http_build_query($options), '">';
 					echo '<img class="graph index ', $typeClass, ' ', $serialClass, '" src="./showGraph.php?', http_build_query($options), '" alt="', $type, ' for ', htmlspecialchars($location . ': ' . $serial), '">';
 					echo '</a>';
+					echo '</div>';
 				}
 			}
 		}
