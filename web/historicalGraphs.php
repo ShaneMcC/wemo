@@ -43,7 +43,7 @@
 	echo '<h1>';
 	echo isset($pageTitle) ? htmlspecialchars($pageTitle) : htmlspecialchars($title);
 	echo '</h1>';
-	echo '<a href="./">[ Back to all graphs ]</a>';
+	echo '<a href="./', (isset($graphCustom) ? '?graphCustom=' . urlencode($graphCustom) : ''), '">[ Back to all graphs ]</a>';
 	echo '<hr>';
 
 	echo '<form method="GET" style="display: inline">';
