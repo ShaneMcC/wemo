@@ -103,7 +103,7 @@
 		$rrdData[] = '--lower-limit ' . floor($lowerLimit);
 		$rrdData[] = '--rigid';
 		if ($noAxis) {
-			$rrdData[] = '-y-grid none -x-grid none';
+			$rrdData[] = '--y-grid none --x-grid none';
 		} else {
 			$rrdData[] = '--vertical-label "Watts"';
 		}
