@@ -7,9 +7,9 @@
 	$location = isset($_REQUEST['location']) ? $_REQUEST['location'] : null;
 	$serial = isset($_REQUEST['serial']) ? $_REQUEST['serial'] : null;
 	$days = isset($_REQUEST['days']) ? $_REQUEST['days'] : null;
-	$start = isset($_REQUEST['start']) ? $_REQUEST['start'] : null;
+	$start = isset($_REQUEST['start']) ? $_REQUEST['start'] : $graphStart;
 	$end = isset($_REQUEST['end']) ? $_REQUEST['end'] : null;
-	$step = isset($_REQUEST['step']) ? $_REQUEST['step'] : null;
+	$step = isset($_REQUEST['step']) ? $_REQUEST['step'] : $graphSteps;
 
 	$debug = isset($_REQUEST['debug']) && $allowDebug;
 	$debugOut = isset($_REQUEST['debugOut']) && $allowDebug;
@@ -126,7 +126,7 @@
 			$rrdData[] = 'CDEF:powerArea' . $i . '=power,' . $val . ',LT,power,' . $val . ',IF CDEF:powerArea' . $i . 'NoUnk=power,UN,0,powerArea' . $i . ',IF AREA:powerArea' . $i . 'NoUnk#' . $col;
 		}
 
-		$rrdData[] = 'LINE:power#000';
+		if (isset($lineColour)) { $rrdData[] = 'LINE:power' . $lineColour; }
 
 		$rrdData[] = 'VDEF:powermax=power,MAXIMUM';
 		$rrdData[] = 'VDEF:poweravg=power,AVERAGE';

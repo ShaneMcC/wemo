@@ -24,6 +24,15 @@
 	/** Upper Limit for graphs. */
 	$graphMax = 2000;
 
+	/** Default graph steps */
+	$graphSteps = 1;
+
+	/** Default graph start */
+	$graphStart = '-1 week';
+
+	/** Line colour on top of the gradient */
+	$lineColour = '#000000'
+
 	/** Gradient for graphs. */
 	$gradients = array();
 	$gradients[] = 'ff0000';
