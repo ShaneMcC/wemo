@@ -12,6 +12,7 @@
 	$step = isset($_REQUEST['step']) ? $_REQUEST['step'] : null;
 
 	$debug = isset($_REQUEST['debug']);
+	$debugOut = isset($_REQUEST['debugOut']);
 
 	// If the params are not passed to us, abort.
 	if ($type == null || $location == null || $serial == null) { die('Internal Error.'); }
@@ -148,11 +149,19 @@
 			$rrdData = array_merge($rrdData, $rrdoptions[$type]['end']);
 		}
 
-		if ($debug) { die('<pre>'.print_r($rrdData, true)); }
+		if ($debug) {
+			echo '<pre>', print_r($rrdData, true);
+			if (!$debugOut) { die(); }
+		}
 
 		$out = execRRDTool($rrdData);
-		header("Content-Type: image/png");
-		die($out['stdout']);
+
+		if ($debugOut) {
+			print_r($out);
+		} else {
+			header("Content-Type: image/png");
+			die($out['stdout']);
+		}
 	}
 
 	die('Internal Error.');
