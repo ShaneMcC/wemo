@@ -174,7 +174,7 @@
 				$bg = imagecolorallocate($img, 200, 200, 200);
 				$text = imagecolorallocate($img, 200, 0, 0);
 				imagestring($img, 4, 20, 20, 'rrdtool Error', $text);
-				imagestring($img, 4, 20, 35, $out['stdout'], $text);
+				imagestring($img, 4, 20, 35, trim($out['stdout']), $text);
 				imagepng($img);
 				imagecolordeallocate($bg);
 				imagecolordeallocate($text);
