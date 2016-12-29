@@ -6,7 +6,6 @@
 	$type = isset($_REQUEST['type']) ? $_REQUEST['type'] : null;
 	$location = isset($_REQUEST['location']) ? $_REQUEST['location'] : null;
 	$serial = isset($_REQUEST['serial']) ? $_REQUEST['serial'] : null;
-	$days = isset($_REQUEST['days']) ? $_REQUEST['days'] : null;
 	$start = isset($_REQUEST['start']) ? $_REQUEST['start'] : $graphStart;
 	$end = isset($_REQUEST['end']) ? $_REQUEST['end'] : null;
 	$step = isset($_REQUEST['step']) ? $_REQUEST['step'] : $graphSteps;
@@ -54,8 +53,6 @@
 			$rrdData[] = 'graph /dev/null';
 
 			if ($start !== null) { $rrdData[] = '--start ' . escapeshellarg($start); }
-			else if (preg_match('#^[0-9]+$#', $days)) { $rrdData[] = '--start "-' . (int)$days . ' days"'; }
-
 			if ($end !== null) { $rrdData[] = '--end ' . escapeshellarg($end); }
 
 			if (preg_match('#^[0-9]+$#', $step)) { $rrdData[] = '--step ' . (int)$step; }
@@ -88,8 +85,6 @@
 		}
 
 		if ($start !== null) { $rrdData[] = '--start ' . escapeshellarg($start); }
-		else if (preg_match('#^[0-9]+$#', $days)) { $rrdData[] = '--start "-' . (int)$days . ' days"'; }
-
 		if ($end !== null) { $rrdData[] = '--end ' . escapeshellarg($end); }
 
 		if (preg_match('#^[0-9]+$#', $step)) { $rrdData[] = '--step ' . (int)$step; }

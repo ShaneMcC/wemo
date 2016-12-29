@@ -9,10 +9,10 @@
 	$end = isset($_REQUEST['end']) ? $_REQUEST['end'] : '';
 
 	if (!isset($historicalOptions)) {
-		$historicalOptions = ['1 Day' => ['days' => 1],
-		                      '10 Days' => ['days' => 10],
-		                      'One Month' => ['days' => 30],
-		                      'One Year' => ['days' => 360],
+		$historicalOptions = ['1 Day' => ['start' => '-1 days'],
+		                      '10 Days' => ['start' => '-10 days'],
+		                      'One Month' => ['start' => '-1 month'],
+		                      'One Year' => ['start' => '-1 year'],
 		                     ];
 	}
 
@@ -84,15 +84,15 @@
 		echo '<hr>';
 	} else {
 		foreach ($historicalOptions as $name => $setting) {
-			$days = isset($setting['days']) ? $setting['days'] : '';
+			$start = isset($setting['start']) ? $setting['start'] : '';
 			$step = isset($setting['step']) ? $setting['step'] : '';
 
 			$options = [];
 			$options['type'] = $type;
 			$options['location'] = $location;
 			$options['serial'] = $serial;
-			$options['days'] = $days;
-			$options['step'] = $step;
+			if (!empty($start)) { $options['start'] = $start; }
+			if (!empty($step)) { $options['step'] = $step; }
 
 			$nameClass = 'historical_' . preg_replace('#[^a-z0-9]#i', '', $name);
 			echo '<h2>', htmlspecialchars($name), '</h2>';
