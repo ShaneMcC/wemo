@@ -73,7 +73,7 @@
 	$serialClass = 'serial_' . preg_replace('#[^a-z0-9]#i', '', $serial);
 
 	if ($start !== '' || $end !== '') {
-		$historicalOptions = ['custom' => []]
+		$historicalOptions = ['custom' => []];
 
 		if ($start !== '') { $historicalOptions['custom']['start'] = $start; }
 		if ($end !== '') { $historicalOptions['custom']['end'] = $end; }
