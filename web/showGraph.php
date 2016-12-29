@@ -57,8 +57,8 @@
 
 			if ($start !== null && !empty($start)) { $rrdData[] = '--start ' . escapeshellarg($start); }
 			if ($end !== null && !empty($end)) { $rrdData[] = '--end ' . escapeshellarg($end); }
-
 			if (preg_match('#^[0-9]+$#', $step)) { $rrdData[] = '--step ' . (int)$step; }
+			$rrdData[] = '--width ' . (int)$width . ' --height ' . (int)$height;
 
 			$rrdData[] = 'DEF:raw="' . $rrd . '":"' . $type . '":AVERAGE';
 			if ($type == 'instantPower') {
