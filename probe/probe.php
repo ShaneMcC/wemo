@@ -44,8 +44,9 @@
 
 	if (!isset($daemon['cli']['post'])) {
 		foreach ($ssdp->search($insightService, $ssdpTimeout, $allowUnicastDiscovery) as $device) {
-			$loc = file_get_contents($device['location']);
+			$loc = @file_get_contents($device['location']);
 			$xml = simplexml_load_string($loc);
+			if ($xml === FALSE) { continue; }
 
 			$dev = array();
 			$dev['name'] = (String)$xml->device->friendlyName;
