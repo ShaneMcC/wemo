@@ -5,6 +5,9 @@
 	$location = isset($_REQUEST['location']) ? $_REQUEST['location'] : null;
 	$serial = isset($_REQUEST['serial']) ? $_REQUEST['serial'] : null;
 
+	$start = isset($_REQUEST['start']) ? $_REQUEST['start'] : null;
+	$end = isset($_REQUEST['end']) ? $_REQUEST['end'] : null;
+
 	if (!isset($historicalOptions)) {
 		$historicalOptions = ['1 Day' => ['days' => 1],
 		                      '10 Days' => ['days' => 10],
@@ -32,7 +35,6 @@
 	}
 	if (isset($graphOpts[$location][$serial]['title_' . $type])) { $title = $graphOpts[$location][$serial]['title_' . $type]; }
 
-
 	$pageName = 'historicalGraphs';
 	if (file_exists(dirname(__FILE__) . '/template/user/header.php')) { require_once(dirname(__FILE__) . '/template/user/header.php'); }
 
@@ -42,13 +44,34 @@
 	echo '<a href="./">[ Back to all graphs ]</a>';
 	echo '<hr>';
 
-	foreach ($historicalOptions as $name => $setting) {
-		$days = isset($setting['days']) ? $setting['days'] : '';
-		$step = isset($setting['step']) ? $setting['step'] : '';
+	if ($start !== null || $end !== null) {
+		$options = [];
+		$options['type'] = $type;
+		$options['location'] = $location;
+		$options['serial'] = $serial;
+		$options['start'] = $start;
+		$options['end'] = $end;
+		if (isset($_REQUEST['step'])) { $options['end'] = $_REQUEST['step']; }
 
-		echo '<h2>', htmlspecialchars($name), '</h2>';
-		echo '<img src="./showGraph.php?type=', urlencode($type), '&location=', urlencode($location), '&serial=', urlencode($serial), '&days=', urlencode($days), '&step=', urlencode($step), '" alt="', htmlspecialchars($name) , ' - ', htmlspecialchars($type), ' for ', htmlspecialchars($location . ': ' . $serial), '">';
+		echo '<h2>', htmlspecialchars($start), ' to ', htmlspecialchars($end), '</h2>';
+		echo '<img src="./showGraph.php?', http_build_query($options), '" alt="', htmlspecialchars($type), ' for ', htmlspecialchars($location . ': ' . $serial), '">';
 		echo '<hr>';
+	} else {
+		foreach ($historicalOptions as $name => $setting) {
+			$days = isset($setting['days']) ? $setting['days'] : '';
+			$step = isset($setting['step']) ? $setting['step'] : '';
+
+			$options = [];
+			$options['type'] = $type;
+			$options['location'] = $location;
+			$options['serial'] = $serial;
+			$options['days'] = $days;
+			$options['step'] = $step;
+
+			echo '<h2>', htmlspecialchars($name), '</h2>';
+			echo '<img src="./showGraph.php?', http_build_query($options), '" alt="', htmlspecialchars($name) , ' - ', htmlspecialchars($type), ' for ', htmlspecialchars($location . ': ' . $serial), '">';
+			echo '<hr>';
+		}
 	}
 
 	if (file_exists(dirname(__FILE__) . '/template/user/footer.php')) { require_once(dirname(__FILE__) . '/template/user/footer.php'); }

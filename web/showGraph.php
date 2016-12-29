@@ -7,6 +7,8 @@
 	$location = isset($_REQUEST['location']) ? $_REQUEST['location'] : null;
 	$serial = isset($_REQUEST['serial']) ? $_REQUEST['serial'] : null;
 	$days = isset($_REQUEST['days']) ? $_REQUEST['days'] : null;
+	$start = isset($_REQUEST['start']) ? $_REQUEST['start'] : null;
+	$end = isset($_REQUEST['end']) ? $_REQUEST['end'] : null;
 	$step = isset($_REQUEST['step']) ? $_REQUEST['step'] : null;
 
 	$debug = isset($_REQUEST['debug']);
@@ -76,7 +78,11 @@
 			$rrdData[] = '--logarithmic --units-exponent 0';
 		}
 
-		if (preg_match('#^[0-9]+$#', $days)) { $rrdData[] = '--start "-' . (int)$days . ' days"'; }
+		if ($start !== null) { $rrdData[] = '--start ' . escapeshellarg($start); }
+		else if (preg_match('#^[0-9]+$#', $days)) { $rrdData[] = '--start "-' . (int)$days . ' days"'; }
+
+		if ($end !== null) { $rrdData[] = '--end ' . escapeshellarg($end); }
+
 		if (preg_match('#^[0-9]+$#', $step)) { $rrdData[] = '--step ' . (int)$step; }
 
 		$rrdData[] = '--width ' . (int)$width . ' --height ' . (int)$height;
