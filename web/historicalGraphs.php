@@ -5,8 +5,8 @@
 	$location = isset($_REQUEST['location']) ? $_REQUEST['location'] : null;
 	$serial = isset($_REQUEST['serial']) ? $_REQUEST['serial'] : null;
 
-	$start = isset($_REQUEST['start']) ? $_REQUEST['start'] : null;
-	$end = isset($_REQUEST['end']) ? $_REQUEST['end'] : null;
+	$start = isset($_REQUEST['start']) ? $_REQUEST['start'] : '';
+	$end = isset($_REQUEST['end']) ? $_REQUEST['end'] : '';
 
 	if (!isset($historicalOptions)) {
 		$historicalOptions = ['1 Day' => ['days' => 1],
@@ -44,13 +44,21 @@
 	echo '<a href="./">[ Back to all graphs ]</a>';
 	echo '<hr>';
 
-	if ($start !== null || $end !== null) {
+	echo '<form method="GET">';
+	echo '  Start:<br>';
+	echo '  <input type="text" name="start"><br>';
+	echo '  End:<br>';
+	echo '  <input type="text" name="end">';
+	echo '</form>';
+	echo '<hr>';
+
+	if ($start !== '' || $end !== '') {
 		$options = [];
 		$options['type'] = $type;
 		$options['location'] = $location;
 		$options['serial'] = $serial;
-		$options['start'] = $start;
-		$options['end'] = $end;
+		if ($start !== '') { $options['start'] = $start; }
+		if ($end !== '') { $options['end'] = $end; }
 		if (isset($_REQUEST['step'])) { $options['end'] = $_REQUEST['step']; }
 
 		echo '<h2>', htmlspecialchars($start), ' to ', htmlspecialchars($end), '</h2>';
