@@ -112,3 +112,79 @@
 	if (file_exists(dirname(__FILE__) . '/config.user.php')) {
 		require_once(dirname(__FILE__) . '/config.user.php');
 	}
+
+	// =========================================================================
+	// The following functions can all be overridden in config.user.php
+	//
+	// These are the default implementations.
+	// =========================================================================
+	if (!function_exists('getCustomSettings')) {
+		/**
+		 * Return array of options to pass to `rrdtool graph` at various points.
+		 *
+		 * @param $location Graph probe location
+		 * @param $serial Device serial number
+		 * @param $type Graph Type
+		 * @param $position Where in the array are we ("flags", "defs", "end")
+		 * @return Array of extra lines to pass to rrdtool.
+		 */
+		function getCustomSettings($location, $serial, $type, $position) {
+			global $graphOpts $rrdoptions;
+
+			if (getGraphOption($location, $serial, 'rrd_'.$position.'_' . $type, null) !== null) {
+				return getGraphOption($location, $serial, 'rrd_'.$position.'_' . $type, null);
+			} else if (isset($rrdoptions[$type][$position])) {
+				return $rrdoptions[$type][$position];
+			}
+
+			return [];
+		}
+	}
+
+	if (!function_exists('getGraphOption')) {
+		/**
+		 * Custom setting value.
+		 *
+		 * @param $location Graph probe location
+		 * @param $serial Device serial number
+		 * @param $option Option to get value for
+		 * @param $fallback [Default: ''] Fallback value to use if there is no
+		 *                  custom value.
+		 * @return Value to use.
+		 */
+		function getGraphOption($location, $serial, $option, $fallback = '') {
+			global $graphOpts;
+
+			if (isset($graphOpts[$location][$serial][$option])) {
+				return $graphOpts[$location][$serial][$option];
+			}
+
+			return $fallback;
+		}
+	}
+
+	if (!function_exists('getLowerLimit')) {
+		/**
+		 * Function to get lower limit for graph.
+		 *
+		 * @param $minVal Minimum data point value.
+		 * @return Minimum graph value to use.
+		 */
+		function getLowerLimit($minVal) {
+			global $graphMin;
+			return floor($minVal) * $graphMin;
+		}
+	}
+
+	if (!function_exists('getUpperLimit')) {
+		/**
+		 * Function to get upper limit for graph.
+		 *
+		 * @param $maxVal Maximum data point value.
+		 * @return Maximum graph value to use.
+		 */
+		function getUpperLimit($maxVal) {
+			global $graphMax;
+			return ceil($maxVal) * $graphMax;
+		}
+	}

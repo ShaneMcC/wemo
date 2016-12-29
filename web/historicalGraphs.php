@@ -36,7 +36,7 @@
 			$title = $type . ' for ' . $location . ': ' . $meta['name'];
 		}
 	}
-	if (isset($graphOpts[$location][$serial]['title_' . $type])) { $title = $graphOpts[$location][$serial]['title_' . $type]; }
+	$title = getGraphOption($location, $serial, 'title_' . $type, $title);
 
 	if (file_exists(dirname(__FILE__) . '/template/user/header.php')) { require_once(dirname(__FILE__) . '/template/user/header.php'); }
 
@@ -73,38 +73,30 @@
 	$serialClass = 'serial_' . preg_replace('#[^a-z0-9]#i', '', $serial);
 
 	if ($start !== '' || $end !== '') {
+		$historicalOptions = ['custom' => []]
+
+		if ($start !== '') { $historicalOptions['custom']['start'] = $start; }
+		if ($end !== '') { $historicalOptions['custom']['end'] = $end; }
+		if (isset($_REQUEST['step'])) { $historicalOptions['custom']['step'] = $_REQUEST['step']; }
+
+		$historicalOptions['title'] = $start . ' to ' . $end;
+	}
+
+	foreach ($historicalOptions as $name => $setting) {
 		$options = [];
 		$options['type'] = $type;
 		$options['location'] = $location;
 		$options['serial'] = $serial;
 		$options['graphPage'] = $pageName;
 		$options['graphCustom'] = $graphCustom;
-		if ($start !== '') { $options['start'] = $start; }
-		if ($end !== '') { $options['end'] = $end; }
-		if (isset($_REQUEST['step'])) { $options['end'] = $_REQUEST['step']; }
+		if (isset($setting['start'])) { $options['start'] = $start; }
+		if (isset($setting['step'])) { $options['step'] = $step; }
+		if (isset($setting['end'])) { $options['end'] = $step; }
 
-		echo '<h2>', htmlspecialchars($start), ' to ', htmlspecialchars($end), '</h2>';
-		echo '<img class="graph historical historical_custom ', $typeClass, ' ', $serialClass, '" src="./showGraph.php?', http_build_query($options), '" alt="', htmlspecialchars($type), ' for ', htmlspecialchars($location . ': ' . $serial), '">';
+		$nameClass = 'historical_' . preg_replace('#[^a-z0-9]#i', '', $name);
+		echo '<h2>', htmlspecialchars(isset($setting['title']) ? $setting['title'] : $name), '</h2>';
+		echo '<img class="graph historical ', $nameClass, ' ', $typeClass, ' ', $serialClass, '" src="./showGraph.php?', http_build_query($options), '" alt="', htmlspecialchars($name) , ' - ', htmlspecialchars($type), ' for ', htmlspecialchars($location . ': ' . $serial), '">';
 		echo '<hr>';
-	} else {
-		foreach ($historicalOptions as $name => $setting) {
-			$start = isset($setting['start']) ? $setting['start'] : '';
-			$step = isset($setting['step']) ? $setting['step'] : '';
-
-			$options = [];
-			$options['type'] = $type;
-			$options['location'] = $location;
-			$options['serial'] = $serial;
-			$options['graphPage'] = $pageName;
-			$options['graphCustom'] = $graphCustom;
-			if (!empty($start)) { $options['start'] = $start; }
-			if (!empty($step)) { $options['step'] = $step; }
-
-			$nameClass = 'historical_' . preg_replace('#[^a-z0-9]#i', '', $name);
-			echo '<h2>', htmlspecialchars($name), '</h2>';
-			echo '<img class="graph historical ', $nameClass, ' ', $typeClass, ' ', $serialClass, '" src="./showGraph.php?', http_build_query($options), '" alt="', htmlspecialchars($name) , ' - ', htmlspecialchars($type), ' for ', htmlspecialchars($location . ': ' . $serial), '">';
-			echo '<hr>';
-		}
 	}
 
 	if (file_exists(dirname(__FILE__) . '/template/user/footer.php')) { require_once(dirname(__FILE__) . '/template/user/footer.php'); }

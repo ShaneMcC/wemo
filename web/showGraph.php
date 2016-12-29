@@ -37,17 +37,17 @@
 	$height = isset($_REQUEST['height']) ? $_REQUEST['height'] : null;
 	$width = isset($_REQUEST['width']) ? $_REQUEST['width'] : null;
 
-	if ($height == null && isset($graphOpts[$location][$serial]['graphHeight'])) { $height = $graphOpts[$location][$serial]['graphHeight']; }
-	if ($width == null && isset($graphOpts[$location][$serial]['graphWidth'])) { $width = $graphOpts[$location][$serial]['graphWidth']; }
+	if ($height == null) { $height = getGraphOption($location, $serial, 'graphHeight', $height); }
+	if ($width == null) { $width = getGraphOption($location, $serial, 'graphWidth', $width); }
 
 	if ($height == null) { $height = $graphHeight; }
 	if ($width == null) { $width = $graphWidth; }
 
-	if (isset($graphOpts[$location][$serial]['graphMin'])) { $graphMin = $graphOpts[$location][$serial]['graphMin']; }
-	if (isset($graphOpts[$location][$serial]['graphMax'])) { $graphMax = $graphOpts[$location][$serial]['graphMax']; }
-	if (isset($graphOpts[$location][$serial]['autoLimit'])) { $autoLimit = $graphOpts[$location][$serial]['autoLimit']; }
-	if (isset($graphOpts[$location][$serial]['linearGraph'])) { $linearGraph = $graphOpts[$location][$serial]['linearGraph']; }
-	if (isset($graphOpts[$location][$serial]['title_' . $type])) { $title = $graphOpts[$location][$serial]['title_' . $type]; }
+	$graphMin = getGraphOption($location, $serial, 'graphMin', $graphMin);
+	$graphMax = getGraphOption($location, $serial, 'graphMax', $graphMax);
+	$autoLimit = getGraphOption($location, $serial, 'autoLimit', $autoLimit);
+	$linearGraph = getGraphOption($location, $serial, 'linearGraph', $linearGraph);
+	$title = getGraphOption($location, $serial, 'title_' . $type, $title);
 
 	// Originally based on https://www.chameth.com/2016/05/02/monitoring-power-with-wemo.html
 	if ($type == 'instantPower' || $type == 'REAL_POWER') {
@@ -72,8 +72,8 @@
 			$rrdData[] = 'PRINT:powermax:"%lf"';
 			$out = execRRDTool($rrdData);
 			$bits = explode("\n", $out['stdout']);
-			$lowerLimit = max(function_exists('getLowerLimit') ? getLowerLimit($bits[1]) : (floor($bits[1]) * $graphMin), 0);
-			$upperLimit = max(function_exists('getUpperLimit') ? getUpperLimit($bits[2]) : (ceil($bits[2]) * $graphMax), 0);
+			$lowerLimit = max(getLowerLimit($bits[1]), 0);
+			$upperLimit = max(getUpperLimit($bits[2]), 1);
 		} else {
 			$lowerLimit = $graphMin;
 			$upperLimit = $graphMax;
@@ -99,11 +99,7 @@
 		$rrdData[] = '--vertical-label "Watts"';
 		$rrdData[] = '--units=si';
 
-		if (isset($graphOpts[$location][$serial]['rrd_flags_' . $type])) {
-			$rrdData = array_merge($rrdData, $graphOpts[$location][$serial]['rrd_flags_' . $type]);
-		} else if (isset($rrdoptions[$type]['flags'])) {
-			$rrdData = array_merge($rrdData, $rrdoptions[$type]['flags']);
-		}
+		$rrdData = array_merge($rrdData, getCustomSettings($location, $serial, $type, 'flags'));
 
 		$rrdData[] = 'DEF:raw="' . $rrd . '":"' . $type . '":AVERAGE';
 		if ($type == 'instantPower') {
@@ -131,11 +127,7 @@
 		$rrdData[] = 'VDEF:powermin=power,MINIMUM';
 		$rrdData[] = 'VDEF:powerlast=power,LAST';
 
-		if (isset($graphOpts[$location][$serial]['rrd_defs_' . $type])) {
-			$rrdData = array_merge($rrdData, $graphOpts[$location][$serial]['rrd_defs_' . $type]);
-		} else if (isset($rrdoptions[$type]['defs'])) {
-			$rrdData = array_merge($rrdData, $rrdoptions[$type]['defs']);
-		}
+		$rrdData = array_merge($rrdData, getCustomSettings($location, $serial, $type, 'defs'));
 
 		$rrdData[] = 'COMMENT:"Maximum\: "';
 		$rrdData[] = 'GPRINT:powermax:"%.2lfW\l"';
@@ -149,11 +141,7 @@
 		$rrdData[] = 'COMMENT:"Latest\:  "';
 		$rrdData[] = 'GPRINT:powerlast:"%.2lfW\l"';
 
-		if (isset($graphOpts[$location][$serial]['rrd_end_' . $type])) {
-			$rrdData = array_merge($rrdData, $graphOpts[$location][$serial]['rrd_end_' . $type]);
-		} else if (isset($rrdoptions[$type]['end'])) {
-			$rrdData = array_merge($rrdData, $rrdoptions[$type]['end']);
-		}
+		$rrdData = array_merge($rrdData, getCustomSettings($location, $serial, $type, 'end'));
 
 		if ($debug) {
 			$debugRRDData = $rrdData;
