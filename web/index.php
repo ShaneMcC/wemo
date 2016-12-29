@@ -1,7 +1,7 @@
 <?php
+	$pageName = 'index';
 	require_once(dirname(__FILE__) . '/config.php');
 
-	$pageName = 'index';
 	if (file_exists(dirname(__FILE__) . '/template/user/header.php')) { require_once(dirname(__FILE__) . '/template/user/header.php'); }
 
 	// Basic Graphing to start with.
@@ -19,6 +19,7 @@
 					$options['type'] = $type;
 					$options['location'] = $location;
 					$options['serial'] = $serial;
+					$options['graphPage'] = $pageName;
 
 					$typeClass = 'type_' . preg_replace('#[^a-z0-9]#i', '', $type);
 					$serialClass = 'serial_' . preg_replace('#[^a-z0-9]#i', '', $serial);

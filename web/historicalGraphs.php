@@ -1,4 +1,5 @@
 <?php
+	$pageName = 'historicalGraphs';
 	require_once(dirname(__FILE__) . '/config.php');
 
 	$type = isset($_REQUEST['type']) ? $_REQUEST['type'] : null;
@@ -35,7 +36,6 @@
 	}
 	if (isset($graphOpts[$location][$serial]['title_' . $type])) { $title = $graphOpts[$location][$serial]['title_' . $type]; }
 
-	$pageName = 'historicalGraphs';
 	if (file_exists(dirname(__FILE__) . '/template/user/header.php')) { require_once(dirname(__FILE__) . '/template/user/header.php'); }
 
 	echo '<h1>';
@@ -75,6 +75,7 @@
 		$options['type'] = $type;
 		$options['location'] = $location;
 		$options['serial'] = $serial;
+		$options['graphPage'] = $pageName;
 		if ($start !== '') { $options['start'] = $start; }
 		if ($end !== '') { $options['end'] = $end; }
 		if (isset($_REQUEST['step'])) { $options['end'] = $_REQUEST['step']; }
@@ -91,6 +92,7 @@
 			$options['type'] = $type;
 			$options['location'] = $location;
 			$options['serial'] = $serial;
+			$options['graphPage'] = $pageName;
 			if (!empty($start)) { $options['start'] = $start; }
 			if (!empty($step)) { $options['step'] = $step; }
 

@@ -1,4 +1,6 @@
 <?php
+	$pageName = 'showGraph';
+	$graphPage = isset($_REQUEST['graphPage']) ? $_REQUEST['graphPage'] : $pageName;
 	require_once(dirname(__FILE__) . '/config.php');
 	require_once(dirname(__FILE__) . '/functions.php');
 
