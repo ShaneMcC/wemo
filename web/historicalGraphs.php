@@ -67,8 +67,8 @@
 	echo '</form>';
 	echo '<hr>';
 
-	$typeClass = 'type_' . preg_replace('#[^a-z0-9]#i', $type);
-	$serialClass = 'serial_' . preg_replace('#[^a-z0-9]#i', $serial);
+	$typeClass = 'type_' . preg_replace('#[^a-z0-9]#i', '', $type);
+	$serialClass = 'serial_' . preg_replace('#[^a-z0-9]#i', '', $serial);
 
 	if ($start !== '' || $end !== '') {
 		$options = [];
