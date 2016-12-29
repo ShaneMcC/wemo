@@ -156,11 +156,31 @@
 
 		$out = execRRDTool($rrdData);
 
+		function isPNG($data) {
+			return count(array_diff(unpack('C8', $data), [137, 80, 78, 71, 13, 10, 26, 10])) == 0;
+		}
+
 		if ($debugOut) {
+			if (isPNG($out['stdout'])) { $out['stdout'] == '<PNG IMAGE>'; }
+			array_walk_recursive($out, function(&$value) { $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8'); });
 			print_r($out);
+			die();
 		} else {
 			header("Content-Type: image/png");
-			die($out['stdout']);
+			if (isPNG($out['stdout'])) {
+				die($out['stdout']);
+			} else {
+				$img = imagecreate($width, $height);
+				$bg = imagecolorallocate($img, 200, 200, 200);
+				$text = imagecolorallocate($img, 200, 0, 0);
+				imagestring($img, 4, 20, 20, 'rrdtool Error', $text);
+				imagestring($img, 4, 20, 35, $out['stdout'], $text);
+				imagepng($img);
+				imagecolordeallocate($bg);
+				imagecolordeallocate($text);
+				imagedestroy($img);
+				die();
+			}
 		}
 	}
 
