@@ -28,7 +28,7 @@
 	$graphSteps = 1;
 
 	/** Default graph start */
-	$graphStart = '-1 week';
+	$graphStart = '-1 day';
 
 	/** Line colour on top of the gradient */
 	$lineColour = '#000000';
