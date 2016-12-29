@@ -52,6 +52,14 @@
 		if ($autoLimit) {
 			$rrdData = array();
 			$rrdData[] = 'graph /dev/null';
+
+			if ($start !== null) { $rrdData[] = '--start ' . escapeshellarg($start); }
+			else if (preg_match('#^[0-9]+$#', $days)) { $rrdData[] = '--start "-' . (int)$days . ' days"'; }
+
+			if ($end !== null) { $rrdData[] = '--end ' . escapeshellarg($end); }
+
+			if (preg_match('#^[0-9]+$#', $step)) { $rrdData[] = '--step ' . (int)$step; }
+
 			$rrdData[] = 'DEF:raw="' . $rrd . '":"' . $type . '":AVERAGE';
 			if ($type == 'instantPower') {
 				$rrdData[] = 'CDEF:power=raw,1000,/';
