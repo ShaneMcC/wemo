@@ -20,8 +20,11 @@
 					$options['location'] = $location;
 					$options['serial'] = $serial;
 
+					$typeClass = 'type_' . preg_replace('#[^a-z0-9]#i', $type);
+					$serialClass = 'serial_' . preg_replace('#[^a-z0-9]#i', $serial);
+
 					echo '<a href="./historicalGraphs.php?', http_build_query($options), '">';
-					echo '<img src="./showGraph.php?', http_build_query($options), '" alt="', $type, ' for ', htmlspecialchars($location . ': ' . $serial), '">';
+					echo '<img class="graph ', $typeClass, ' ', $serialClass, '" src="./showGraph.php?', http_build_query($options), '" alt="', $type, ' for ', htmlspecialchars($location . ': ' . $serial), '">';
 					echo '</a>';
 				}
 			}

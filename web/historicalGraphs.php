@@ -67,6 +67,9 @@
 	echo '</form>';
 	echo '<hr>';
 
+	$typeClass = 'type_' . preg_replace('#[^a-z0-9]#i', $type);
+	$serialClass = 'serial_' . preg_replace('#[^a-z0-9]#i', $serial);
+
 	if ($start !== '' || $end !== '') {
 		$options = [];
 		$options['type'] = $type;
@@ -77,7 +80,7 @@
 		if (isset($_REQUEST['step'])) { $options['end'] = $_REQUEST['step']; }
 
 		echo '<h2>', htmlspecialchars($start), ' to ', htmlspecialchars($end), '</h2>';
-		echo '<img src="./showGraph.php?', http_build_query($options), '" alt="', htmlspecialchars($type), ' for ', htmlspecialchars($location . ': ' . $serial), '">';
+		echo '<img class="graph historical historical_custom ', $typeClass, ' ', $serialClass, '" src="./showGraph.php?', http_build_query($options), '" alt="', htmlspecialchars($type), ' for ', htmlspecialchars($location . ': ' . $serial), '">';
 		echo '<hr>';
 	} else {
 		foreach ($historicalOptions as $name => $setting) {
@@ -91,8 +94,9 @@
 			$options['days'] = $days;
 			$options['step'] = $step;
 
+			$nameClass = 'historical_' . preg_replace('#[^a-z0-9]#i', $name);
 			echo '<h2>', htmlspecialchars($name), '</h2>';
-			echo '<img src="./showGraph.php?', http_build_query($options), '" alt="', htmlspecialchars($name) , ' - ', htmlspecialchars($type), ' for ', htmlspecialchars($location . ': ' . $serial), '">';
+			echo '<img class="graph historical ', $nameClass, ' ', $typeClass, ' ', $serialClass, '" src="./showGraph.php?', http_build_query($options), '" alt="', htmlspecialchars($name) , ' - ', htmlspecialchars($type), ' for ', htmlspecialchars($location . ': ' . $serial), '">';
 			echo '<hr>';
 		}
 	}
