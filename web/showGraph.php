@@ -1,6 +1,7 @@
 <?php
 	$pageName = 'showGraph';
 	$graphPage = isset($_REQUEST['graphPage']) ? $_REQUEST['graphPage'] : $pageName;
+	$graphCustom = isset($_REQUEST['graphCustom']) ? $_REQUEST['graphCustom'] : '';
 	require_once(dirname(__FILE__) . '/config.php');
 	require_once(dirname(__FILE__) . '/functions.php');
 

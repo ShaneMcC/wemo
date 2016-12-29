@@ -1,5 +1,7 @@
 <?php
 	$pageName = 'historicalGraphs';
+	$graphPage = $pageName;
+	$graphCustom = isset($_REQUEST['graphCustom']) ? $_REQUEST['graphCustom'] : '';
 	require_once(dirname(__FILE__) . '/config.php');
 
 	$type = isset($_REQUEST['type']) ? $_REQUEST['type'] : null;
@@ -76,6 +78,7 @@
 		$options['location'] = $location;
 		$options['serial'] = $serial;
 		$options['graphPage'] = $pageName;
+		$options['graphCustom'] = $graphCustom;
 		if ($start !== '') { $options['start'] = $start; }
 		if ($end !== '') { $options['end'] = $end; }
 		if (isset($_REQUEST['step'])) { $options['end'] = $_REQUEST['step']; }
@@ -93,6 +96,7 @@
 			$options['location'] = $location;
 			$options['serial'] = $serial;
 			$options['graphPage'] = $pageName;
+			$options['graphCustom'] = $graphCustom;
 			if (!empty($start)) { $options['start'] = $start; }
 			if (!empty($step)) { $options['step'] = $step; }
 

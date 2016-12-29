@@ -1,5 +1,7 @@
 <?php
 	$pageName = 'index';
+	$graphPage = $pageName;
+	$graphCustom = isset($_REQUEST['graphCustom']) ? $_REQUEST['graphCustom'] : '';
 	require_once(dirname(__FILE__) . '/config.php');
 
 	if (file_exists(dirname(__FILE__) . '/template/user/header.php')) { require_once(dirname(__FILE__) . '/template/user/header.php'); }
@@ -20,6 +22,7 @@
 					$options['location'] = $location;
 					$options['serial'] = $serial;
 					$options['graphPage'] = $pageName;
+					$options['graphCustom'] = $graphCustom;
 
 					$typeClass = 'type_' . preg_replace('#[^a-z0-9]#i', '', $type);
 					$serialClass = 'serial_' . preg_replace('#[^a-z0-9]#i', '', $serial);
