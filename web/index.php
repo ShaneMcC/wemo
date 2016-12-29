@@ -9,7 +9,7 @@
 		echo '<html><head><title>Power Graphs</title></head>';
 		echo '<body>';
 		echo '<style>';
-		echo 'div.graph { display: inline-block; } ';
+		echo 'div.graph { display: inline; } ';
 		echo '</style>';
 	}
 

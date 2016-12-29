@@ -43,7 +43,7 @@
 		echo '<html><head><title>Historical Power Graphs :: ', isset($pageTitle) ? htmlspecialchars($pageTitle) : htmlspecialchars($title), '</title></head>';
 		echo '<body>';
 		echo '<style>';
-		echo 'div.graph { display: inline-block; } ';
+		echo 'div.graph { display: inline; } ';
 		echo '</style>';
 	}
 
