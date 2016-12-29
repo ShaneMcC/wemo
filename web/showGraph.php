@@ -150,7 +150,9 @@
 		}
 
 		if ($debug) {
-			echo '<pre>', print_r($rrdData, true);
+			$debugRRDData = $rrdData;
+			array_walk_recursive($debugRRDData, function(&$value) { $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8'); });
+			echo '<pre>', print_r($debugRRDData, true);
 			if (!$debugOut) { die(); }
 		}
 
