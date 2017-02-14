@@ -84,7 +84,7 @@
 		// $rrdData[] = '--skip-past-updates';
 		$rrdData[] = '--template ' . $dsname;
 		$rrdData[] = $time . ':' . $value;
-		execRRDTool($rrdData);
+		return execRRDTool($rrdData);
 	}
 
 	die(json_encode(array('success' => 'ok')));
