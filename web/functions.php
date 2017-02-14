@@ -27,3 +27,15 @@
 
 		return array('stdout' => $stdout, 'stderr' => $stderr, 'status' => $status);
 	}
+
+	/**
+	 * Check is a string stats with another.
+	 *
+	 * @param $haystack Where to look
+	 * @param $needle What to look for
+	 * @return True if $haystack starts with $needle
+	 */
+	function startsWith($haystack, $needle) {
+		$length = strlen($needle);
+		return (substr($haystack, 0, $length) === $needle);
+	}
