@@ -54,7 +54,10 @@
 			if (!file_exists($rrdDataFile)) { createRRD($rrdDataFile, $dsname, $dstype, $data['time']); }
 			if (!file_exists($rrdDataFile)) { die(json_encode(array('error' => 'Internal Error'))); }
 
-			updateRRD($rrdDataFile, $dsname, $data['time'], $storeValue);
+			$result = updateRRD($rrdDataFile, $dsname, $data['time'], $storeValue);
+			if ($result['status']['exitcode'] != 0) {
+				die(json_encode(array('error' => 'Internal Error')));
+			}
 		}
 	}
 

@@ -23,6 +23,7 @@
 		fclose($pipes[1]);
 		fclose($pipes[2]);
 		proc_close($process);
+		$status = proc_get_status($process);
 
-		return array('stdout' => $stdout, 'stderr' => $stderr);
+		return array('stdout' => $stdout, 'stderr' => $stderr, 'status' => $status);
 	}
