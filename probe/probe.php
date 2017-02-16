@@ -180,8 +180,21 @@
 		curl_close($ch);
 
 		$result = @json_decode($result, true);
-		return isset($result['success']);
+		return $result;
 	}
+
+        /**
+         * Check is a string stats with another.
+         *
+         * @param $haystack Where to look
+         * @param $needle What to look for
+         * @return True if $haystack starts with $needle
+         */
+        function startsWith($haystack, $needle) {
+                $length = strlen($needle);
+                return (substr($haystack, 0, $length) === $needle);
+        }
+
 
 	if (isset($daemon['cli']['search'])) { die(0); }
 	if (isset($daemon['cli']['debug'])) {
@@ -198,11 +211,17 @@
 				$data = file_get_contents($dataFile);
 				$test = json_decode($data, true);
 				if (isset($test['time']) && isset($test['devices'])) {
-					if (submitData($data, $url)) {
+					$submitted = submitData($data, $url);
+					if (isset($submitted['success'])) {
 						echo 'Submitted data for: ', $test['time'], ' to ', $url, "\n";
 						unlink($dataFile);
 					} else {
-						echo 'Unable to submit data for: ', $test['time'], ' to ', $url, "\n";
+						if (startsWith($submitted['error'], "illegal attempt to update using time")) {
+							echo 'Data for ', $test['time'], ' to ', $url, "is illegal - discarding\n";
+							unlink($dataFile);
+						} else {
+							echo 'Unable to submit data for: ', $test['time'], ' to ', $url, "\n";
+						}
 					}
 				}
 			}

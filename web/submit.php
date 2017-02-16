@@ -56,7 +56,20 @@
 
 			$result = updateRRD($rrdDataFile, $dsname, $data['time'], $storeValue);
 			if (startsWith($result['stdout'], 'ERROR:')) {
-				die(json_encode(array('error' => 'Internal Error')));
+				//Strip path from the error along with new line
+				$errorNoPath = substr($result['stdout'],strrpos($result['stdout'],":")+2,-1);
+
+				// Check if the error is to do with illigal timestamp
+				if (startsWith($errorNoPath, "illegal attempt to update using time")) {
+					die(json_encode(array('error' => $errorNoPath)));
+				}
+
+				// If $rrdDetailedErrors is enabled, display the full error
+				if ($rrdDetailedErrors) {
+					die(json_encode(array('error' => $errorNoPath)));
+				} else {
+					die(json_encode(array('error' => 'Internal Error')));
+				}
 			}
 		}
 	}
