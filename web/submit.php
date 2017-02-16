@@ -56,10 +56,10 @@
 
 			$result = updateRRD($rrdDataFile, $dsname, $data['time'], $storeValue);
 			if (startsWith($result['stdout'], 'ERROR:')) {
-				//Strip path from the error along with new line
+				// Strip path from the error along with new line
 				$errorNoPath = substr($result['stdout'],strrpos($result['stdout'],":")+2,-1);
 
-				// Check if the error is to do with illigal timestamp
+				// Check if the error is to do with illegal timestamp
 				if (startsWith($errorNoPath, "illegal attempt to update using time") || $rrdDetailedErrors) {
 					die(json_encode(array('error' => $errorNoPath)));
 				} else {

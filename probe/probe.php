@@ -183,17 +183,17 @@
 		return $result;
 	}
 
-        /**
-         * Check is a string stats with another.
-         *
-         * @param $haystack Where to look
-         * @param $needle What to look for
-         * @return True if $haystack starts with $needle
-         */
-        function startsWith($haystack, $needle) {
-                $length = strlen($needle);
-                return (substr($haystack, 0, $length) === $needle);
-        }
+	/**
+	 * Check is a string stats with another.
+	 *
+	 * @param $haystack Where to look
+	 * @param $needle What to look for
+	 * @return True if $haystack starts with $needle
+	 */
+	function startsWith($haystack, $needle) {
+		$length = strlen($needle);
+		return (substr($haystack, 0, $length) === $needle);
+	}
 
 
 	if (isset($daemon['cli']['search'])) { die(0); }
@@ -217,7 +217,7 @@
 						unlink($dataFile);
 					} else {
 						if (startsWith($submitted['error'], "illegal attempt to update using time")) {
-							echo 'Data for ', $test['time'], ' to ', $url, "is illegal - discarding\n";
+							echo 'Data for ', $test['time'], ' to ', $url, ' is illegal - discarding.', "\n";
 							unlink($dataFile);
 						} else {
 							echo 'Unable to submit data for: ', $test['time'], ' to ', $url, "\n";
