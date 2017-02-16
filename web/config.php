@@ -80,6 +80,25 @@
 	$rrdoptions['instantPower']['end'] = array();
 
 	/**
+	 * Return detailed rrdtool errors to the submitting client?
+	 *
+	 * Defaults to false (disabled) and will return generic error to the client if
+	 * rrdtool errors for some reason.
+	 *
+	 * Enabling this option will return the error in full to the client
+	 * so that it might act accordingly.
+	 *
+	 * When enabled, this may expose more information than you might like
+	 * about your sytem.
+	 *
+	 * NOTE: If rrdtool errors because you're trying to submit data with an
+	 * illegal timestamp then we will tell the client so that it can make a
+	 * decision as to how to deal with the data it just gathered.
+	 *
+	 */
+	$rrdDetailedErrors = false;
+
+	/**
 	 * Automatically decide limits for graphs?
 	 *
 	 * If true, then $graphMin and $graphMax are multipliers on the min/max
