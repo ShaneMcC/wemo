@@ -159,7 +159,7 @@
 	}
 
 	function submitData($data, $url) {
-		global $location, $submissionKey;
+		global $location, $submissionKey, $probe_name;
 
 		$url = parse_url($url);
 		$thisUser = isset($url['user']) ? $url['user'] : $location;
@@ -175,6 +175,8 @@
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_USERPWD, $thisUser . ':' . $thisPass);
 		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		curl_setopt($ch, CURLOPT_USERAGENT,'WeMo Probe: '.$probe_name);
+
 
 		$result = curl_exec($ch);
 		curl_close($ch);

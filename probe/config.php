@@ -3,6 +3,9 @@
 	/** This location. */
 	$location = 'Home';
 
+	/** This probe. */
+	$probe_name = 'Probe 1';
+
 	/** Submission Key. */
 	$submissionKey = 'SomePassword';
 
