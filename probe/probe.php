@@ -223,6 +223,7 @@
 							unlink($dataFile);
 						} else {
 							echo 'Unable to submit data for: ', $test['time'], ' to ', $url, "\n";
+							break;
 						}
 					}
 				}
