@@ -9,3 +9,5 @@ To prevent data-loss, if the central server is unavailable, data will collect on
 The probes will look for any insight-capable devices on the network at the time they run, and submit the data for any they find.
 
 Currently this only graphs the "instantPower" value, even though the probes collect a lot more than that.
+
+Graphs can be collected and viewed using https://github.com/ShaneMcC/collector-web
