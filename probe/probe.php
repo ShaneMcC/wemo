@@ -200,7 +200,7 @@
 
 	if (isset($daemon['cli']['search'])) { die(0); }
 	if (isset($daemon['cli']['debug'])) {
-		print_r($devices);
+		echo json_encode($devices, JSON_PRETTY_PRINT), "\n";
 		die(0);
 	}
 
