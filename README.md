@@ -1,3 +1,10 @@
+# Deprecated
+
+This stand-alone repo has been deprecated.
+
+See https://github.com/ShaneMcC/collector-probe and https://github.com/ShaneMcC/collector-web instead.
+
+
 # WEMO Tools
 
 This repo contains tools for collecting data from a collection of belkin wemo insight devices.
